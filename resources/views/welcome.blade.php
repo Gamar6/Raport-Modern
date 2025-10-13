@@ -174,7 +174,7 @@
         <p class="text-xl text-gray-600 mb-8">
             Bergabunglah dengan sekolah-sekolah yang sudah mempercayai <strong>EduPotensi</strong>
         </p>
-        <a href="{{ route('register') }}"
+        <a href="{{ route('login') }}"
            class="px-8 py-4 bg-indigo-600 text-white rounded-xl font-semibold shadow-md hover:bg-indigo-700 transition">
            Mulai Gratis
         </a>

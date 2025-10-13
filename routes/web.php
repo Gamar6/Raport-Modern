@@ -18,4 +18,6 @@ Route::get('/orangtua', function() {
     return view('orangtua.index', ['title' => 'Dashboard Orang Tua']);
 })->name('orangtua');
 
-Route::get('/register', fn() => 'Halaman Registrasi')->name('register');
+Route::get('/login', function() {
+    return view('user.login', ['title' => 'Halaman Login']);
+})->name('login');
