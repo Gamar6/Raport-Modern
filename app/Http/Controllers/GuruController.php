@@ -19,6 +19,7 @@ class GuruController extends Controller
         $mapel = $guru->mapel;
 
         $kelasYangDiampu = $guru->kelasYangDiampu;
+        
         $kelasIds = $kelasYangDiampu->pluck('id');
 
         $totalKelas = $kelasYangDiampu->count();
@@ -33,15 +34,17 @@ class GuruController extends Controller
     public function simpanNilai(Request $request)
     {
         $request->validate([
-            'siswa_id' => 'required|exists:siswas,id',
+            'siswa_id' => 'required|exists:siswa,id',
             'mapel' => 'required|string|max:50',
             'jenis_nilai' => 'required|string',
             'nilai' => 'required|integer|min:0|max:100',
         ]);
 
+        $guru = Auth::user()->guru;  // ambil data guru terkait user yang login
+
         Nilai::create([
             'siswa_id' => $request->siswa_id,
-            'guru_id' => Auth::id(),
+            'guru_id' => $guru->id, // pakai id guru, bukan user
             'mapel' => $request->mapel,
             'jenis_nilai' => $request->jenis_nilai,
             'nilai' => $request->nilai,
@@ -53,23 +56,27 @@ class GuruController extends Controller
     public function simpanNilaiUjian(Request $request)
     {
         $request->validate([
-            'siswa_id' => 'required|exists:siswas,id',
-            'mapel' => 'required|string|max:50',
-            'jenis' => 'required|in:UTS,UAS',
-            'nilai' => 'required|integer|min:0|max:100',
+            'siswa_id' => 'required|exists:siswa,id',
+            'mapel' => 'required|string|max:100',
+            'jenis_nilai' => 'required|in:UTS,UAS',
+            'nilai' => 'required|numeric|min:0|max:100',
         ]);
 
-        Nilai::create([
-            'siswa_id' => $request->siswa_id,
-            'guru_id' => Auth::id(),
-            'mapel' => $request->mapel,
-            'jenis_nilai' => $request->jenis,
-            'nilai' => $request->nilai,
-        ]);
+        try {
+            Nilai::create([
+                'siswa_id' => $request->siswa_id,
+                'guru_id' => Auth::id(),
+                'mapel' => $request->mapel,
+                'jenis_nilai' => $request->jenis_nilai,
+                'nilai' => $request->nilai,
+                'tanggal_input' => now()->toDateString(),
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menyimpan nilai ujian: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Nilai UTS/UAS berhasil disimpan!');
     }
-
 
 }
 

@@ -12,12 +12,12 @@ class Kelas extends Model
 
     public function waliKelas()
     {
-        return $this->belongsTo(User::class, 'wali_kelas_id'); // ✅ kolom benar
+        return $this->belongsTo(User::class, 'wali_kelas_id'); 
     }
 
     public function wali()
     {
-        return $this->belongsTo(User::class, 'wali_kelas_id'); // ✅ kolom benar
+        return $this->belongsTo(User::class, 'wali_kelas_id'); 
     }
 
     public function siswas()
