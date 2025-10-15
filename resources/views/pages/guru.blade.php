@@ -2,108 +2,151 @@
 @section('title', 'Dashboard Guru')
 @section('content')
 
-<div class="space-y-8">
+<div class="min-h-screen space-y-8 rounded-2xl bg-white p-6 transition-colors duration-300 dark:bg-gray-900">
   <!-- Header -->
   <div>
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard Guru</h1>
-    <p class="text-gray-500 text-sm">Kelola nilai dan catatan keaktifan siswa</p>
+    <h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Dashboard Guru</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400">Kelola nilai dan catatan keaktifan siswa</p>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-3">
+    <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Mata Pelajaran</p>
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">{{ $mapel }}</h3>
+    </div>
+    <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Total Kelas</p>
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">{{ $totalKelas }}</h3>
+    </div>
+    <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Total Siswa yang diajar</p>
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">{{ $totalSiswa }}</h3>
+    </div>
+  </div>
+
+  <!-- Select Kelas -->
+  <div>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Kelas</label>
+    <select name="kelas_id" id="kelas_id"
+      class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
+      <option value="">Pilih Kelas</option>
+      @foreach ($kelasYangDiampu as $kls)
+        <option value="{{ $kls->id }}">{{ $kls->nama }}</option>
+      @endforeach
+    </select>
   </div>
 
   <!-- Form Input Nilai -->
   <div class="grid gap-6 lg:grid-cols-2">
     <!-- Form Tugas -->
-    <div class="rounded-xl border border-gray-100 bg-white shadow-sm p-6">
-      <div class="mb-4">
-        <h3 class="text-2xl font-semibold text-gray-800">Input Nilai Tugas</h3>
-        <p class="text-sm text-gray-500">Masukkan nilai tugas individu atau kelompok</p>
-      </div>
+    <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-1">Input Nilai Tugas</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Masukkan nilai tugas individu atau kelompok</p>
 
-      <form class="space-y-4">
+      <form action="{{ route('dashboard.guru.simpan-nilai') }}" method="POST" class="space-y-4">
+        @csrf
         <div>
-          <label class="text-sm font-medium text-gray-700">Nama Siswa</label>
-          <select class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400">
-            <option>Pilih siswa</option>
-            <option>Ahmad Fauzan</option>
-            <option>Siti Nurhaliza</option>
-            <option>Budi Santoso</option>
-            <option>Dewi Lestari</option>
+          <label>Nama Siswa</label>
+          <select name="siswa_id" id="siswa_id" required
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
+            <option value="">Pilih siswa</option>
+            @foreach ($siswas as $s)
+              <option value="{{ $s->id }}">{{ $s->nama }}</option>
+            @endforeach
           </select>
         </div>
 
         <div>
-          <label class="text-sm font-medium text-gray-700">Jenis Tugas</label>
-          <select class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400">
-            <option>Pilih jenis</option>
-            <option>Tugas Individu</option>
-            <option>Tugas Kelompok</option>
+          <label>Jenis Tugas</label>
+          <select name="jenis" required
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
+            <option value="">Pilih jenis</option>
+            <option value="tugas_individu">Tugas Individu</option>
+            <option value="tugas_kelompok">Tugas Kelompok</option>
           </select>
         </div>
 
         <div>
-          <label class="text-sm font-medium text-gray-700">Nilai (0-100)</label>
-          <input type="number" placeholder="85" class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400" />
+          <label>Nilai (0-100)</label>
+          <input type="number" name="nilai" min="0" max="100" required
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200" />
         </div>
 
         <div>
-          <label class="text-sm font-medium text-gray-700">Catatan</label>
-          <textarea placeholder="Tambahkan catatan (opsional)" class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400"></textarea>
+          <label>Catatan</label>
+          <textarea name="catatan"
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200"></textarea>
         </div>
 
-        <button type="submit" class="w-full bg-purple-600 text-white rounded-md py-2 hover:bg-purple-700 text-sm font-medium transition-colors">
+        <input type="hidden" name="mapel" value="{{ $mapel }}">
+
+        <button type="submit"
+          class="w-full rounded-md bg-blue-600 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
           Simpan Nilai
         </button>
       </form>
     </div>
 
     <!-- Form UTS/UAS -->
-    <div class="rounded-xl border border-gray-100 bg-white shadow-sm p-6">
-      <div class="mb-4">
-        <h3 class="text-2xl font-semibold text-gray-800">Input Nilai UTS/UAS</h3>
-        <p class="text-sm text-gray-500">Masukkan nilai ujian tengah/akhir semester</p>
-      </div>
+    <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-1">Input Nilai UTS/UAS</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Masukkan nilai ujian tengah/akhir semester</p>
 
-      <form class="space-y-4">
+      <form action="{{ route('dashboard.guru.simpan-nilai-ujian') }}" method="POST" class="space-y-4">
+        @csrf
         <div>
-          <label class="text-sm font-medium text-gray-700">Nama Siswa</label>
-          <select class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400">
-            <option>Pilih siswa</option>
-            <option>Ahmad Fauzan</option>
-            <option>Siti Nurhaliza</option>
-            <option>Budi Santoso</option>
-            <option>Dewi Lestari</option>
+          <label>Nama Siswa</label>
+          <select name="siswa_id" required
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
+            <option value="">Pilih siswa</option>
+            @foreach ($siswas as $s)
+              <option value="{{ $s->id }}">{{ $s->nama }}</option>
+            @endforeach
           </select>
         </div>
 
         <div>
-          <label class="text-sm font-medium text-gray-700">Jenis Ujian</label>
-          <select class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400">
-            <option>Pilih jenis</option>
-            <option>UTS</option>
-            <option>UAS</option>
+          <label>Jenis Ujian</label>
+          <select name="jenis_nilai" required
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
+            <option value="">Pilih jenis</option>
+            <option value="UTS">UTS</option>
+            <option value="UAS">UAS</option>
           </select>
         </div>
 
-        <div>
-          <label class="text-sm font-medium text-gray-700">Mata Pelajaran</label>
-          <select class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400">
-            <option>Pilih mata pelajaran</option>
-            <option>Matematika</option>
-            <option>IPA</option>
-            <option>Bahasa Indonesia</option>
-            <option>Bahasa Inggris</option>
-          </select>
-        </div>
+        <input type="hidden" name="mapel" value="{{ $mapel }}">
 
         <div>
-          <label class="text-sm font-medium text-gray-700">Nilai (0-100)</label>
-          <input type="number" placeholder="90" class="w-full mt-1 rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400" />
+          <label>Nilai (0-100)</label>
+          <input type="number" name="nilai" min="0" max="100" placeholder="90"
+            class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200" />
         </div>
 
-        <button type="submit" class="w-full bg-purple-600 text-white rounded-md py-2 hover:bg-purple-700 text-sm font-medium transition-colors">
+        <button type="submit"
+          class="w-full rounded-md bg-blue-600 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
           Simpan Nilai
         </button>
       </form>
     </div>
   </div>
 </div>
+
+<script>
+  document.getElementById('kelas_id').addEventListener('change', function () {
+    const kelasId = this.value;
+
+    fetch(`/guru/siswa-by-kelas?kelas_id=${kelasId}`)
+      .then(res => res.json())
+      .then(data => {
+        const siswaSelect = document.getElementById('siswa_id');
+        siswaSelect.innerHTML = '<option value="">Pilih siswa</option>';
+
+        data.forEach(siswa => {
+          siswaSelect.innerHTML += `<option value="${siswa.id}">${siswa.nama}</option>`;
+        });
+      });
+  });
+</script>
+
 @endsection
