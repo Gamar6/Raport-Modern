@@ -86,6 +86,15 @@
                     </a>
                 @endforeach
             </nav>
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="w-full flex items-center justify-center bg-red-600 text-white px-4 py-2 rounded-md font-medium hover:bg-red-700 transition">
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
     </aside>
 
@@ -122,7 +131,7 @@
                 class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-full focus:outline-none transition"
                 aria-label="Toggle Dark Mode"
             >
-                <span x-show="!darkMode"><img src="img/moon.svg" alt="kontol" class=""></span>
+                <span x-show="!darkMode"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7m-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938A8 8 0 0 0 4 12"/></svg></span>
                 <span x-show="darkMode"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18a6 6 0 1 0 0-12a6 6 0 0 0 0 12m10-6h1M12 2V1m0 22v-1m8-2l-1-1m1-15l-1 1M4 20l1-1M4 4l1 1m-4 7h1"/></svg></span>
             </button>
         </header>

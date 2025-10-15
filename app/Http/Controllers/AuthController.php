@@ -36,10 +36,10 @@ class AuthController extends Controller
             case 'guru':
                 return redirect()->route('pages.guru');
             case 'pembina':
-                return redirect()->route('pages');
+                return redirect()->route('pages.pembina');
             case 'siswa':
             case 'ortu':
-                return redirect()->route('pages');
+                return redirect()->route('pages.siswa');
             default:
                 Auth::logout();
                 return redirect()->route('login')->withErrors(['login' => 'Role tidak dikenali.']);

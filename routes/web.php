@@ -10,7 +10,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::get('/', function () {
-    return view('app');
+    return view('home');
 });
 // Dashboard sesuai role
 Route::middleware('auth')->group(function () {
@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
         return view('pages.guru');
     })->name('pages.guru');
 
-    Route::get('/dashboard/pembina', function () {
+    Route::get('/pages/pembina', function () {
         return view('pages.pembina');
     })->name('pages.pembina');
 
@@ -31,16 +31,3 @@ Route::middleware('auth')->group(function () {
     })->name('pages.siswa');
 });
 
-
-
-Route::get('/guru', function () {
-    return view('pages.guru', ['title' => 'Dashboard Guru']);
-})->name('guru');
-    
-Route::get('/pembina', function() {
-    return view('pages.pembina', ['title' => 'Dashboard Pembina']);
-})->name('pembina');
-
-Route::get('/orangtua', function() {
-    return view('pages.ortusiswa', ['title' => 'Dashboard Orang Tua']);
-})->name('orangtua');
