@@ -3,12 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\LihatNilaiController;
+
 
 // Halaman login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/nilai', [App\Http\Controllers\LihatNilaiController::class, 'index'])->name('nilai.index');
 
 Route::get('/', function () {
     return view('home');
