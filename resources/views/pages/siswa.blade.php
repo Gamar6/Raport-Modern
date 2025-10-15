@@ -37,6 +37,26 @@
     </div>
   </div>
 
+  <!-- Potensi & Minat -->
+  <div class="rounded-xl border border-gray-100 bg-white shadow-sm p-6">
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">Potensi & Minat</h3>
+    <p class="text-sm text-gray-500 mb-4">Badge yang menunjukkan kecenderungan potensi siswa</p>
+    <div class="flex flex-wrap gap-3">
+      <span class="inline-flex items-center rounded-full border border-transparent bg-purple-600 text-white hover:bg-purple-700 gap-2 px-4 py-2 text-sm font-medium shadow-sm transition-colors">
+        💡 Kepemimpinan
+      </span>
+      <span class="inline-flex items-center rounded-full border border-transparent bg-pink-600 text-white hover:bg-pink-700 gap-2 px-4 py-2 text-sm font-medium shadow-sm transition-colors">
+        🎨 Kreativitas Tinggi
+      </span>
+      <span class="inline-flex items-center rounded-full border border-transparent bg-green-600 text-white hover:bg-green-700 gap-2 px-4 py-2 text-sm font-medium shadow-sm transition-colors">
+        🚀 Inovatif
+      </span>
+      <span class="inline-flex items-center rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 gap-2 px-4 py-2 text-sm font-medium shadow-sm transition-colors">
+        👥 Komunikasi Baik
+      </span>
+    </div>
+  </div>
+
   <!-- Grid Konten -->
   <div class="grid gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2 space-y-6">
@@ -86,16 +106,6 @@
       <div class="rounded-xl border border-gray-100 bg-white shadow-sm p-6">
         <h3 class="text-xl font-semibold text-gray-800 mb-4">Statistik Siswa</h3>
         <canvas id="studentRadarChart" height="250"></canvas>
-      </div>
-
-      <!-- Potensi & Badge -->
-      <div class="rounded-xl border border-gray-100 bg-white shadow-sm p-6">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Potensi & Badge</h3>
-        <div class="flex flex-wrap gap-2">
-          <span class="inline-flex items-center px-3 py-1.5 bg-purple-100 text-purple-700 text-sm font-medium rounded-full">Kreativitas Tinggi</span>
-          <span class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 text-sm font-medium rounded-full">Inovatif</span>
-          <span class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">Komunikatif</span>
-        </div>
       </div>
     </div>
   </div>
