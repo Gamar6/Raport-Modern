@@ -12,7 +12,7 @@
   <div class="grid gap-6 lg:grid-cols-3">
     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <p class="text-sm text-gray-500 dark:text-gray-400">Mata Pelajaran</p>
-      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">{{ $mapel }}</h3>
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100" >{{ $mapel }}</h3>
     </div>
     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <p class="text-sm text-gray-500 dark:text-gray-400">Total Kelas</p>
@@ -29,9 +29,9 @@
     <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Kelas</label>
     <select name="kelas_id" id="kelas_id"
       class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
-      <option value="">Pilih Kelas</option>
+      <option value="" class="dark:bg-blue-950 dark:text-gray-200">Pilih Kelas</option>
       @foreach ($kelasYangDiampu as $kls)
-        <option value="{{ $kls->id }}">{{ $kls->nama }}</option>
+        <option value="{{ $kls->id }}" class="dark:bg-blue-950 dark:text-gray-200">{{ $kls->nama_kelas }}</option>
       @endforeach
     </select>
   </div>
@@ -49,20 +49,20 @@
           <label>Nama Siswa</label>
           <select name="siswa_id" id="siswa_id" required
             class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
-            <option value="">Pilih siswa</option>
+            <option value="" class="dark:bg-blue-950">Pilih siswa</option>
             @foreach ($siswas as $s)
-              <option value="{{ $s->id }}">{{ $s->nama }}</option>
+              <option value="{{ $s->id }}" class="dark:bg-blue-950">{{ $s->nama }}</option>
             @endforeach
           </select>
         </div>
 
         <div>
           <label>Jenis Tugas</label>
-          <select name="jenis" required
+          <select name="jenis nilai" required
             class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
             <option value="" class="dark:bg-blue-950">Pilih jenis</option>
-            <option value="tugas_individu" class="dark:bg-blue-950">Tugas Individu</option>
-            <option value="tugas_kelompok" class="dark:bg-blue-950">Tugas Kelompok</option>
+            <option value="tugas individu" class="dark:bg-blue-950">Tugas Individu</option>
+            <option value="tugas kelompok" class="dark:bg-blue-950">Tugas Kelompok</option>
           </select>
         </div>
 
@@ -98,16 +98,16 @@
           <label>Nama Siswa</label>
           <select name="siswa_id" required
             class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
-            <option value="">Pilih siswa</option>
+            <option value="" class="dark:bg-blue-950">Pilih siswa</option>
             @foreach ($siswas as $s)
-              <option value="{{ $s->id }}">{{ $s->nama }}</option>
+              <option value="{{ $s->id }}" class="dark:bg-blue-950">{{ $s->nama }}</option>
             @endforeach
           </select>
         </div>
 
         <div>
           <label>Jenis Ujian</label>
-          <select name="jenis_nilai" required
+          <select name="jenis nilai" required
             class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
             <option value="" class="dark:bg-blue-950">Pilih jenis</option>
             <option value="UTS" class="dark:bg-blue-950">UTS</option>

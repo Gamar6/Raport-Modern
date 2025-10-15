@@ -8,13 +8,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Nilai extends Model
 {
     use HasFactory;
+    protected $table = 'nilai';
+
 
     protected $fillable = [
-        'siswa_id',
-        'guru_id',
-        'mapel',
-        'jenis_nilai',
-        'nilai',
+    'siswa_id',
+    'guru_id',
+    'mapel',
+    'jenis_nilai',
+    'nilai',
+    'catatan',
+    'tanggal_input',
     ];
 
     public function siswa()
@@ -24,6 +28,8 @@ class Nilai extends Model
 
     public function guru()
     {
-        return $this->belongsTo(User::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 }
+
+
