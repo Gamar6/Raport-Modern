@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GuruController;
 
 // Halaman login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -21,13 +22,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/pages/guru', function () {
         return view('pages.guru');
     })->name('pages.guru');
+    Route::post('/guru/simpan-nilai', [GuruController::class, 'simpanNilai'])->name('dashboard.guru.simpan-nilai');
+    Route::post('/guru/simpan-nilai-ujian', [GuruController::class, 'simpanNilaiUjian'])->name('dashboard.guru.simpan-nilai-ujian');
 
     Route::get('/pages/pembina', function () {
-        return view('pages.pembina');
+    return view('pages.pembina');
     })->name('pages.pembina');
+
+    Route::get('/pages/guru', [GuruController::class, 'index'])->name('pages.guru');
+    Route::post('/pages/guru/nilai', [GuruController::class, 'simpanNilai'])->name('dashboard.guru.simpan-nilai');
 
     Route::get('/pages/siswa', function () {
         return view('pages.siswa');
     })->name('pages.siswa');
 });
+
+
 

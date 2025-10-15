@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Siswa;
+use App\Models\Nilai;
+use App\Models\Mapel;
+use App\Models\Kelas;
+
+class GuruController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user();
+        $guru = $user->guru; // akses model Guru yang terkait
+
+        $mapel = $guru->mapel;
+
+        $kelasYangDiampu = $guru->kelasYangDiampu;
+        $kelasIds = $kelasYangDiampu->pluck('id');
+
+        $totalKelas = $kelasYangDiampu->count();
+
+        $siswas = Siswa::whereIn('kelas_id', $kelasIds)->get();
+
+        $totalSiswa = $siswas->count();
+
+        return view('pages.guru', compact('mapel', 'kelasYangDiampu', 'totalKelas', 'totalSiswa', 'siswas'));
+    }
+
+    public function simpanNilai(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswas,id',
+            'mapel' => 'required|string|max:50',
+            'jenis_nilai' => 'required|string',
+            'nilai' => 'required|integer|min:0|max:100',
+        ]);
+
+        Nilai::create([
+            'siswa_id' => $request->siswa_id,
+            'guru_id' => Auth::id(),
+            'mapel' => $request->mapel,
+            'jenis_nilai' => $request->jenis_nilai,
+            'nilai' => $request->nilai,
+        ]);
+
+        return redirect()->back()->with('success', 'Nilai berhasil disimpan!');
+    }
+
+    public function simpanNilaiUjian(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswas,id',
+            'mapel' => 'required|string|max:50',
+            'jenis' => 'required|in:UTS,UAS',
+            'nilai' => 'required|integer|min:0|max:100',
+        ]);
+
+        Nilai::create([
+            'siswa_id' => $request->siswa_id,
+            'guru_id' => Auth::id(),
+            'mapel' => $request->mapel,
+            'jenis_nilai' => $request->jenis,
+            'nilai' => $request->nilai,
+        ]);
+
+        return redirect()->back()->with('success', 'Nilai UTS/UAS berhasil disimpan!');
+    }
+
+
+}
+
