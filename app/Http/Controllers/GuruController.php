@@ -48,6 +48,7 @@ class GuruController extends Controller
             'mapel' => $request->mapel,
             'jenis_nilai' => $request->jenis_nilai,
             'nilai' => $request->nilai,
+            'catatan' => $request->catatan,
         ]);
 
         return redirect()->back()->with('success', 'Nilai berhasil disimpan!');
@@ -69,6 +70,7 @@ class GuruController extends Controller
                 'mapel' => $request->mapel,
                 'jenis_nilai' => $request->jenis_nilai,
                 'nilai' => $request->nilai,
+                'catatan' => $request->catatan,
                 'tanggal_input' => now()->toDateString(),
             ]);
         } catch (\Exception $e) {
