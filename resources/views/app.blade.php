@@ -90,7 +90,7 @@
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit"
-                        class="w-full flex items-center justify-center bg-red-600 text-white px-4 py-2 rounded-md font-medium hover:bg-red-700 transition">
+                        class="w-full flex items-center justify-center bg-red-600 text-white px-4 py-2 rounded-md font-medium hover:bg-red-700 transition" :class="sidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">
                         Logout
                     </button>
                 </form>

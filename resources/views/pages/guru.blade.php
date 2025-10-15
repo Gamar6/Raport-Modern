@@ -60,9 +60,9 @@
           <label>Jenis Tugas</label>
           <select name="jenis" required
             class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
-            <option value="">Pilih jenis</option>
-            <option value="tugas_individu">Tugas Individu</option>
-            <option value="tugas_kelompok">Tugas Kelompok</option>
+            <option value="" class="dark:bg-blue-950">Pilih jenis</option>
+            <option value="tugas_individu" class="dark:bg-blue-950">Tugas Individu</option>
+            <option value="tugas_kelompok" class="dark:bg-blue-950">Tugas Kelompok</option>
           </select>
         </div>
 
@@ -109,9 +109,9 @@
           <label>Jenis Ujian</label>
           <select name="jenis_nilai" required
             class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
-            <option value="">Pilih jenis</option>
-            <option value="UTS">UTS</option>
-            <option value="UAS">UAS</option>
+            <option value="" class="dark:bg-blue-950">Pilih jenis</option>
+            <option value="UTS" class="dark:bg-blue-950">UTS</option>
+            <option value="UAS" class="dark:bg-blue-950">UAS</option>
           </select>
         </div>
 
