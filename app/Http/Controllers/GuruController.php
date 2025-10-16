@@ -31,6 +31,19 @@ class GuruController extends Controller
         return view('pages.guru', compact('mapel', 'kelasYangDiampu', 'totalKelas', 'totalSiswa', 'siswas'));
     }
 
+    public function getSiswaByKelas(Request $request)
+    {
+        $kelasId = $request->query('kelas_id');
+
+        $siswas = Siswa::where('kelas_id', $kelasId)
+                    ->select('id', 'nama')
+                    ->orderBy('nama')
+                    ->get();
+
+        return response()->json($siswas);
+    }
+
+
     public function simpanNilai(Request $request)
     {
         $request->validate([
@@ -81,4 +94,6 @@ class GuruController extends Controller
     }
 
 }
+
+
 

@@ -32,4 +32,3 @@ class Nilai extends Model
     }
 }
 
-

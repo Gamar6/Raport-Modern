@@ -43,4 +43,3 @@ class LihatNilaiController extends Controller
     }
 }
 
-
