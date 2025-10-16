@@ -77,9 +77,11 @@ class GuruController extends Controller
         ]);
 
         try {
+            $guru = Auth::user()->guru;
+
             Nilai::create([
                 'siswa_id' => $request->siswa_id,
-                'guru_id' => Auth::id(),
+                'guru_id' => $guru->id, 
                 'mapel' => $request->mapel,
                 'jenis_nilai' => $request->jenis_nilai,
                 'nilai' => $request->nilai,
