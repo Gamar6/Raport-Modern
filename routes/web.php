@@ -37,11 +37,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/siswa-by-kelas', [GuruController::class, 'getSiswaByKelas'])->name('guru.siswa-by-kelas');
     });
 
-    // Halaman pembina
+     // Halaman pembina
     Route::prefix('pembina')->group(function () {
         Route::get('/pembina', [PembinaController::class, 'index'])->name('pembina.dashboard');
-        Route::post('/pembina/aktivitas', [PembinaController::class, 'simpanAktivitas'])->name('pembina.aktivitas.simpan');
+        Route::post('/pembina/aktivitas', [PembinaController::class, 'simpanAktivitas'])->name('pembina.aktivitas.simpan'); // Route baru untuk simpan aktivitas
         Route::post('/pembina/potensi', [PembinaController::class, 'simpanPotensi'])->name('pembina.potensi.simpan');
+        Route::post('/pembina/simpan-penilaian', [PembinaController::class, 'simpanPenilaian'])->name('pembina.simpanPenilaian');
     });
 
 

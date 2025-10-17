@@ -31,6 +31,13 @@ class SiswaEkskulModel extends Model
         return $this->hasMany(CatatanPembina::class, 'siswa_ekskul_id');
     }
 
+    public function penilaianPotensi()
+{
+    return $this->hasOne(PenilaianPotensi::class, 'siswa_id', 'siswa_id')
+                ->where('ekskul_id', $this->ekskul_id);
+}
+
+
 }
 
 

@@ -141,7 +141,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Catatan Pembina -->
     @foreach ($siswaEkskulModel as $siswaEkskul)
       <div class="mt-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -149,8 +149,7 @@
           {{ $siswaEkskul->ekstrakurikuler->pembina->nama ?? 'Pembina tidak ditemukan' }}
         </div>
 
-        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Masukan dan catatan dari Pembina mengenai perkembangan
-          siswa</p>
+        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Pembina Drum Band</p>
 
         @forelse($siswaEkskul->catatanPembina as $catatan)
           <div
@@ -193,14 +192,10 @@
             </div>
           </div>
         @empty
-          <p class="text-gray-500 dark:text-gray-400">Belum ada catatan pembina untuk ekstrakurikuler ini.</p>
+          <p class="text-gray-500 dark:text-gray-400">Zainal Abidin sebaiknya melakukan latihan lebih untuk pengembangan lebih lanjut</p>
         @endforelse
       </div>
     @endforeach
-
-
-
-
   </div>
 
   <!-- Script Chart.js -->
