@@ -141,53 +141,66 @@
         </div>
       </div>
     </div>
-    <!-- Catatan Guru -->
-    <div class="mt-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-      <h3 class="mb-2 text-xl font-semibold text-gray-800 dark:text-white">Catatan Pembina Ekstrakurikuler</h3>
-      <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Masukan dan catatan dari Pembina mengenai perkembangan siswa
-      </p>
+    
+    <!-- Catatan Pembina -->
+    @foreach ($siswaEkskulModel as $siswaEkskul)
+      <div class="mt-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
+          {{ $siswaEkskul->ekstrakurikuler->pembina->nama ?? 'Pembina tidak ditemukan' }}
+        </div>
 
-      <!-- Card Catatan -->
-      <div class="flex flex-wrap items-start gap-4 pt-7 md:flex-nowrap">
-        <!-- Foto Guru -->
-        <div class="flex-shrink-0">
+        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Masukan dan catatan dari Pembina mengenai perkembangan
+          siswa</p>
+
+        @forelse($siswaEkskul->catatanPembina as $catatan)
           <div
-            class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
-            PB
-          </div>
-        </div>
+            class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
+            <!-- Foto Guru -->
+            <div class="flex-shrink-0">
+              <div
+                class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
+                {{ strtoupper(substr($catatan->pembina->nama ?? 'PB', 0, 2)) }}
+              </div>
+            </div>
 
-        <!-- Info Guru -->
-        <div class="flex flex-col justify-center pt-1.5 md:min-w-[180px]">
-          <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">Ahmad Zulkifli</div>
-          <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">Pembina Drum Band</div>
-        </div>
+            <!-- Info Guru -->
+            <div class="flex flex-col justify-center pt-1.5 md:min-w-[180px]">
+              <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
+                {{ $catatan->pembina->nama ?? 'Pembina' }}</div>
+              <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
+                Pembina {{ $siswaEkskul->ekstrakurikuler->nama_ekskul ?? 'Tidak ada ekskul' }}</div>
+            </div>
 
-        <div class="relative grid w-full flex-1 grid-cols-2 gap-4">
-          <!-- Rating memanjang 2 kolom -->
-          <div
-            class="col-span-2 -mt-6 flex justify-between rounded-lg bg-gray-50 p-2 text-sm font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-            Kategori Potensi Siswa
-          </div>
+            <div class="relative grid w-full flex-1 grid-cols-2 gap-4">
+              <div
+                class="col-span-2 -mt-6 flex justify-between rounded-lg bg-gray-50 p-2 text-sm font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                Kategori Potensi Siswa
+              </div>
 
-          <!-- Deskripsi 1 -->
-          <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Alasan pemberian potensi</b>
-            <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
-              Alasan Pemberian potensi
-            </p>
-          </div>
+              <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+                <b class="text-gray-800 dark:text-white">Alasan pemberian potensi</b>
+                <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                  {{ $catatan->alasan }}
+                </p>
+              </div>
 
-          <!-- Deskripsi 2 -->
-          <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Pengembangan Potensi</b>
-            <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
-              Perlu ditingkatkan pada keterampilan menulis laporan eksperimen dan partisipasi dalam tugas individu.
-            </p>
+              <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+                <b class="text-gray-800 dark:text-white">Pengembangan Potensi</b>
+                <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                  {{ $catatan->rekomendasi }}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+        @empty
+          <p class="text-gray-500 dark:text-gray-400">Belum ada catatan pembina untuk ekstrakurikuler ini.</p>
+        @endforelse
       </div>
-    </div>
+    @endforeach
+
+
+
+
   </div>
 
   <!-- Script Chart.js -->

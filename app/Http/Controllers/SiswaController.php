@@ -15,7 +15,6 @@ class SiswaController extends Controller
         $user = $request->user();
         $siswa = Siswa::where('user_id', $user->id)->first();
 
-        // Jika tidak ditemukan data siswa dari user
         if (!$siswa) {
             return view('pages.siswa', compact('user'))->with('error', 'Data siswa tidak ditemukan');
         }
@@ -23,10 +22,13 @@ class SiswaController extends Controller
         // Ambil nilai siswa
         $nilai = Nilai::where('siswa_id', $siswa->id)->get();
 
-        // Ambil data ekstrakurikuler yang diikuti siswa
-        $siswaEkskulModel = SiswaEkskulModel::with('ekstrakurikuler')
-            ->where('siswa_id', $siswa->id)
-            ->get();
+        // Ambil data ekstrakurikuler beserta catatan pembina yang terkait,
+        // termasuk eager load pembina dari ekskul
+$siswaEkskulModel = SiswaEkskulModel::with([
+    'ekstrakurikuler.pembina',
+    'catatanPembina.pembina'
+])->where('siswa_id', $siswa->id)->get();
+
 
         // Mapel → Potensi
         $potensiMapel = [
@@ -46,7 +48,6 @@ class SiswaController extends Controller
             ->whereRaw("LOWER(jenis_nilai) = 'uas'")
             ->get();
 
-        // Kalau belum ada data
         if ($nilaiUas->isEmpty()) {
             return view('pages.siswa', [
                 'siswa' => $siswa,
@@ -59,10 +60,8 @@ class SiswaController extends Controller
             ]);
         }
 
-        // Hitung rata-rata UAS
         $rataRata = round($nilaiUas->avg('nilai'), 2);
 
-        // Mapel + Potensi
         $nilaiArray = $nilaiUas->map(function ($item) use ($potensiMapel) {
             return (object)[
                 'mapel' => $item->mapel,
@@ -71,10 +70,8 @@ class SiswaController extends Controller
             ];
         });
 
-        // Ambil top 5 nilai tertinggi (untuk badge Potensi)
         $potensi = $nilaiArray->sortByDesc('nilai')->take(5);
 
-        // Radar Chart — semua potensi yang ada
         $stats = [];
         foreach ($potensiMapel as $mapel => $potensiNama) {
             $nilai = $nilaiArray->firstWhere('potensi', $potensiNama)->nilai ?? 0;

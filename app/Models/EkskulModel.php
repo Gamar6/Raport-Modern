@@ -12,6 +12,8 @@ class EkskulModel extends Model
     protected $table = 'ekskul';
     protected $fillable = ['nama_ekskul', 'deskripsi'];
 
+    
+
     // Relasi dengan model SiswaEkskulModel
     public function siswaEkstrakurikuler()
     {

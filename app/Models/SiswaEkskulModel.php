@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory; 
+use App\Models\CatatanPembina;
 
 class SiswaEkskulModel extends Model
 {
@@ -23,6 +24,13 @@ class SiswaEkskulModel extends Model
     {
         return $this->belongsTo(User::class, 'siswa_id');
     }
+
+    // Relasi dengan CatatanPembina (banyak catatan untuk 1 siswa-ekskul)
+    public function catatanPembina()
+    {
+        return $this->hasMany(CatatanPembina::class, 'siswa_ekskul_id');
+    }
+
 }
 
 
