@@ -149,7 +149,7 @@
           {{ $siswaEkskul->ekstrakurikuler->pembina->nama ?? 'Pembina tidak ditemukan' }}
         </div>
 
-        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Pembina Drum Band</p>
+        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">Pembina Futsal</p>
 
         @forelse($siswaEkskul->catatanPembina as $catatan)
           <div
