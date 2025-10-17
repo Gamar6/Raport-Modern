@@ -14,15 +14,15 @@
     <div class="grid gap-6 lg:grid-cols-3">
       <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <p class="text-sm text-gray-500 dark:text-gray-400">Ekstrakurikuler</p>
-        <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">FUTSAL</h3>
+        <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Futsal</h3>
       </div>
       <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <p class="text-sm text-gray-500 dark:text-gray-400">Total Anggota</p>
         <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">123</h3>
       </div>
       <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <p class="text-sm text-gray-500 dark:text-gray-400">Prestasi</p>
-        <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">23</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Rata-rata Partisipasi</p>
+        <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">90.5%</h3>
       </div>
     </div>
 
@@ -107,11 +107,9 @@
               <select
                 class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500">
                 <option>Pilih kategori</option>
-                <option>Kepemimpinan</option>
-                <option>Kerja Sama Tim</option>
-                <option>Kedisiplinan</option>
-                <option>Kreativitas</option>
-                <option>Inisiatif</option>
+                <option>Keterampilan Teknis</option>
+                <option>Kreativitas & Inovasi</option>
+                <option>Potensi Kepemimpinan</option>
               </select>
             </div>
 
