@@ -6,6 +6,7 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\LihatNilaiController;
 use App\Http\Controllers\StatNilaiController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\PembinaController;
 use Illuminate\Http\Request;
 
 // Halaman login
@@ -37,9 +38,12 @@ Route::middleware('auth')->group(function () {
     });
 
     // Halaman pembina
-    Route::get('/pages/pembina', function () {
-        return view('pages.pembina');
-    })->name('pages.pembina');
+    Route::prefix('pembina')->group(function () {
+        Route::get('/pembina', [PembinaController::class, 'index'])->name('pembina.dashboard');
+        Route::post('/pembina/aktivitas', [PembinaController::class, 'simpanAktivitas'])->name('pembina.aktivitas.simpan');
+        Route::post('/pembina/potensi', [PembinaController::class, 'simpanPotensi'])->name('pembina.potensi.simpan');
+    });
+
 
     // Halaman siswa (dashboard siswa)
 

@@ -12,9 +12,16 @@ class EkskulModel extends Model
     protected $table = 'ekskul';
     protected $fillable = ['nama_ekskul', 'deskripsi'];
 
-    // Relasi dengan model SiswaEkstrakurikuler
+    // Relasi dengan model SiswaEkskulModel
     public function siswaEkstrakurikuler()
     {
         return $this->hasMany(SiswaEkskulModel::class, 'ekskul_id');
     }
+
+    // Relasi dengan model User (Pembina)
+    public function pembina()
+    {
+        return $this->belongsTo(User::class, 'pembina_id');
+    }
 }
+

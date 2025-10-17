@@ -18,4 +18,11 @@ class SiswaEkskulModel extends Model
         return $this->belongsTo(EkskulModel::class, 'ekskul_id');
     }
 
+    // Relasi dengan model User (Siswa)
+    public function siswa()
+    {
+        return $this->belongsTo(User::class, 'siswa_id');
+    }
 }
+
+

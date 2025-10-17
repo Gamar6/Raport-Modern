@@ -36,7 +36,7 @@ class AuthController extends Controller
             case 'guru':
                 return redirect()->route('pages.guru');
             case 'pembina':
-                return redirect()->route('pages.pembina');
+                return redirect()->route('pembina.dashboard');
             case 'siswa':
             case 'ortu':
                 return redirect()->route('pages.siswa');
