@@ -1,4 +1,4 @@
-@extends('app') {{-- atau layout yang kamu pakai --}}
+@extends('app')  
 
 @section('content')
   <div class="container">

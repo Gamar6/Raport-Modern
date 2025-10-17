@@ -72,9 +72,9 @@
               class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200" />
           </div>
 
-          <div>
+            <div>
             <label>Catatan</label>
-            <textarea name="catatan"
+            <textarea name="catatan" required
               class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200"></textarea>
           </div>
 
@@ -125,7 +125,7 @@
 
           <div>
             <label>Catatan</label>
-            <textarea name="catatan"
+            <textarea name="catatan" required
               class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200"></textarea>
           </div>
 

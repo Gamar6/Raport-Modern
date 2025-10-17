@@ -43,6 +43,6 @@ Route::middleware('auth')->group(function () {
 
     // Halaman siswa (dashboard siswa)
 
-    Route::get('/pages/siswa', [StatNilaiController::class, 'index'])->name('pages.siswa');
+    Route::get('/pages/siswa', [SiswaController::class, 'index'])->name('pages.siswa');
 
 });

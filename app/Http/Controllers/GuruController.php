@@ -61,7 +61,7 @@ class GuruController extends Controller
             'mapel' => $request->mapel,
             'jenis_nilai' => $request->jenis_nilai,
             'nilai' => $request->nilai,
-            'catatan' => $request->catatan,
+            'catatan' => $request->catatan ?? null,
         ]);
 
         return redirect()->back()->with('success', 'Nilai berhasil disimpan!');
@@ -74,6 +74,7 @@ class GuruController extends Controller
             'mapel' => 'required|string|max:100',
             'jenis_nilai' => 'required|in:UTS,UAS',
             'nilai' => 'required|numeric|min:0|max:100',
+            'catatan' => 'nullable|string|max:200',
         ]);
 
         try {
@@ -85,7 +86,7 @@ class GuruController extends Controller
                 'mapel' => $request->mapel,
                 'jenis_nilai' => $request->jenis_nilai,
                 'nilai' => $request->nilai,
-                'catatan' => $request->catatan,
+                'catatan' => $request->catatan ?? null,
                 'tanggal_input' => now()->toDateString(),
             ]);
         } catch (\Exception $e) {
@@ -96,6 +97,3 @@ class GuruController extends Controller
     }
 
 }
-
-
-

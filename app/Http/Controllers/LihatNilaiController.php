@@ -1,20 +1,4 @@
-<?php
-
-// namespace App\Http\Controllers;
-// use App\Models\Nilai;
-// use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Auth;
-
-// class LihatNilaiController extends Controller
-// {
-//     public function index()
-//     {
-//         auth()->role(); // Pastikan user sudah login
-//         $semuaNilai = Nilai::with(['siswa', 'guru.user'])->get(); 
-//         return view('nilai.index', compact('semuaNilai'));
-//     }
-// }  
-
+<?php 
 namespace App\Http\Controllers;
 
 use App\Models\Nilai;
@@ -41,5 +25,4 @@ class LihatNilaiController extends Controller
 
         return view('nilai.index', ['semuaNilai' => $nilai]);
     }
-}
-
+} 
