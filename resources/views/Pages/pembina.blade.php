@@ -48,7 +48,7 @@
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nama Siswa</label>
             <select name="siswa_id"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500">
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
               <option value="">Pilih siswa</option>
               
             </select>
@@ -57,13 +57,13 @@
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Tingkat Partisipasi (%)</label>
             <input type="number" name="partisipasi" placeholder="95" min="0" max="100"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500" />
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200" />
           </div>
 
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Tingkat Keterampilan</label>
             <select name="tingkat_keterampilan"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500">
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
               <option value="">Pilih tingkat</option>
               <option value="Mahir">Mahir</option>
               <option value="Lanjut">Lanjut</option>
@@ -75,7 +75,7 @@
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
             <textarea name="catatan" rows="5" placeholder="Tambahkan feedback untuk siswa"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500"></textarea>
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200"></textarea>
           </div>
 
           <button type="submit"
@@ -98,7 +98,7 @@
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nama Siswa</label>
             <select name="siswa_id"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500">
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
               <option value="">Pilih siswa</option>
               
             </select>
@@ -107,7 +107,7 @@
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Kategori Potensi</label>
             <select name="kategori_potensi"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500">
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200">
               <option value="">Pilih kategori</option>
               <option value="Keterampilan Teknis">Keterampilan Teknis</option>
               <option value="Kreativitas & Inovasi">Kreativitas & Inovasi</option>
@@ -118,13 +118,13 @@
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Alasan Penilaian Potensi</label>
             <textarea name="alasan" rows="3" placeholder="Contoh: Siswa sangat antusias dalam mengikuti setiap latihan"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500"></textarea>
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200"></textarea>
           </div>
 
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Rekomendasi Pengembangan</label>
             <textarea name="rekomendasi" rows="3" placeholder="Contoh: Siswa disarankan aktif di kompetisi antar sekolah"
-              class="mt-1 w-full rounded-md border border-gray-200 bg-purple-50 p-2 text-sm focus:ring-2 focus:ring-purple-400 dark:border-gray-700 dark:bg-purple-700 dark:focus:ring-purple-500"></textarea>
+              class="mt-1 w-full rounded-md border border-gray-200 bg-blue-50 p-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-blue-950/15 dark:text-blue-200"></textarea>
           </div>
 
           <button type="submit"
