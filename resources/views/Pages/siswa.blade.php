@@ -8,22 +8,21 @@
       <h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Profil Siswa</h1>
       <p class="text-sm text-gray-500 dark:text-gray-400">Ringkasan lengkap progres dan potensi siswa</p>
     </div>
-
     <!-- Profil Utama -->
     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
       <div class="flex flex-col items-start gap-6 md:flex-row md:items-center">
         <div
           class="flex h-24 w-24 items-center justify-center rounded-full bg-purple-100 text-4xl font-bold text-purple-700 shadow-sm dark:bg-purple-900 dark:text-purple-300">
-          
+          Nama Siswa
         </div>
         <div class="flex-1 space-y-2">
-          <h2 class="text-2xl font-semibold text-gray-800 dark:text-white"></h2>
+          <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Andi</h2>
           <div class="flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span>Kelas </span>
+            <span>Kelas X IPA 3</span>
             <span>•</span>
+            <span>12345</span>
             <span>•</span>
-            <span>•</span>
-            <span>Semester 2 - 2024</span>
+            <span>Tingkat 2</span>
           </div>
           <div class="flex flex-wrap gap-2 pt-2">
             <span
@@ -33,11 +32,11 @@
         </div>
         <div class="grid grid-cols-2 gap-4 text-center">
           <div class="rounded-lg bg-purple-50 p-3 dark:bg-purple-900">
-            <p class="text-3xl font-bold text-purple-700 dark:text-purple-300"></p>
+            <p class="text-3xl font-bold text-purple-700 dark:text-purple-300">80.0</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Rata-rata UAS</p>
           </div>
           <div class="rounded-lg bg-purple-50 p-3 dark:bg-purple-900">
-            <p class="text-3xl font-bold text-green-700 dark:text-green-400"></p>
+            <p class="text-3xl font-bold text-green-700 dark:text-green-400">4</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Bidang Potensi</p>
           </div>
         </div>
@@ -49,7 +48,10 @@
       <h3 class="mb-2 text-xl font-semibold text-gray-800 dark:text-white">Potensi & Minat</h3>
       <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Badge menunjukkan 5 mata pelajaran dengan nilai tertinggi
         UAS</p>
-      
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-purple-700">
+          Analisis
+        </span>
     </div>
 
     <!-- Grid Konten -->
@@ -62,17 +64,39 @@
           <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Nilai per mata pelajaran (UAS)</p>
 
           <div class="space-y-4">
-            
+              <div>
+                <div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span>Matematika</span>
+                  <span class="text-purple-700 dark:text-purple-300">Catatan UTS</span>
+                </div>
+                <div class="h-2 w-full rounded-full bg-purple-50 dark:bg-purple-950">
+                  <div class="h-2 rounded-full bg-purple-600" style="width: 70%"></div>
+                </div>
+              </div>
+              {{-- <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada nilai yang tersedia.</p> --}}
           </div>
         </div>
-
         <!-- Ekstrakurikuler -->
         <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
           <h3 class="mb-2 text-xl font-semibold text-gray-800 dark:text-white">Ekstrakurikuler</h3>
           <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Tingkat Partisipasi & Tingkat Keterampilan</p>
 
           <div class="space-y-4">
+              <div class="border-b pb-4">
+                <div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span>Futsal</span> <!-- Menampilkan nama ekstrakurikuler -->
+                  <span class="text-purple-700 dark:text-purple-300">Lanjut</span>
+                  <!-- Menampilkan tingkat -->
+                </div>
 
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  <span>Partisipasi: 100%</span> <!-- Menampilkan partisipasi -->
+                </div>
+                <div class="h-2 w-full rounded-full bg-purple-50 dark:bg-purple-950">
+                  <div class="h-2 rounded-full bg-purple-600" style="width: 70ch"></div>
+                </div>
+              </div>
+              {{-- <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada ekstrakurikuler yang diikuti.</p> --}}
           </div>
         </div>
       </div>
@@ -87,13 +111,48 @@
     </div>
     
     <!-- Catatan Pembina -->
-    
+      <div class="mt-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
+          Catatan dari Pembina Ekstrakurikuler
+        </div>
+        {{-- Detail --}}
+          <div
+            class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
+            <!-- Foto Guru -->
+            <div class="flex-shrink-0">
+              <div
+                class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
+                A
+              </div>
+            </div>
 
+            <!-- Info Guru -->
+            <div class="flex flex-col justify-center pt-1.5 md:min-w-[180px]">
+              <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
+                Alex Setiawan</div>
+              <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
+                Pembina Basket</div>
+            </div>
 
+            <div class="relative grid w-full flex-1 grid-cols-2 gap-4">
 
+              <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+                <b class="text-gray-800 dark:text-white">Alasan pemberian potensi</b>
+                <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                  aktif
+                </p>
+              </div>
 
+              <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+                <b class="text-gray-800 dark:text-white">Pengembangan Potensi</b>
+                <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                  ikut ssb
+                </p>
+              </div>
+            </div>
+          </div>
+      </div>
   </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const isDark = document.documentElement.classList.contains('dark');
 

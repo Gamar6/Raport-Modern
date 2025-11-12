@@ -30,7 +30,7 @@
     ></div>
 
     <!-- Sidebar -->
-    <aside 
+    {{-- <aside 
         class="fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out"
         :class="{
             '-translate-x-full': !sidebarOpen && window.innerWidth < 1024,
@@ -96,7 +96,7 @@
                 </form>
             </div>
         </div>
-    </aside>
+    </aside> --}}
 
     <!-- Konten Utama -->
     <div class="flex flex-col flex-1 transition-all duration-300 bg-[#f8f5ff] dark:bg-gray-900"

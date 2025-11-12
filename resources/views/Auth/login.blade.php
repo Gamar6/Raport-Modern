@@ -16,13 +16,14 @@
     </div>
 
     <!-- Form -->
-    <form action="#" method="POST" class="space-y-5">
+    <form action="{{ route('login.post') }}" method="POST" class="space-y-5">
+      @csrf
       <!-- ID Username -->
       <div>
-        <label for="ID" class="block text-sm font-medium text-gray-700">ID Username</label>
-        <input type="text" id="ID" name="username"
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" name="email"
                class="w-full mt-1 px-4 py-2 border border-gray-200 rounded-md bg-purple-50 text-gray-800 text-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
-               placeholder="Masukkan NIS atau NIP anda" required>
+               placeholder="Masukkan Email Anda" required>
       </div>
 
       <!-- Password -->
