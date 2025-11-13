@@ -123,20 +123,25 @@
           <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Tingkat Partisipasi & Tingkat Keterampilan</p>
 
           <div class="space-y-4">
-            <div class="border-b pb-4">
-              <div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                <span>Futsal</span> <!-- Menampilkan nama ekstrakurikuler -->
-                <span class="text-purple-700 dark:text-purple-300">Lanjut</span>
-                <!-- Menampilkan tingkat -->
-              </div>
+            @forelse ($ekskuls as $item)
+              <div class="border-b pb-4">
+                <div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span>{{ $item['nama'] }}</span>
+                  <span class="text-purple-700 dark:text-purple-300">{{ $item['tingkat_keterampilan'] ?? '-' }}</span>
+                </div>
 
-              <div class="text-sm text-gray-500 dark:text-gray-400">
-                <span>Partisipasi: 100%</span> <!-- Menampilkan partisipasi -->
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  <span>Partisipasi: {{ $item['tingkat_partisipasi'] ?? 0 }}%</span>
+                </div>
+
+                <div class="h-2 w-full rounded-full bg-purple-50 dark:bg-purple-950">
+                  <div class="h-2 rounded-full bg-purple-600" style="width: {{ $item['tingkat_partisipasi'] ?? 0 }}%">
+                  </div>
+                </div>
               </div>
-              <div class="h-2 w-full rounded-full bg-purple-50 dark:bg-purple-950">
-                <div class="h-2 rounded-full bg-purple-600" style="width: 70ch"></div>
-              </div>
-            </div>
+            @empty
+              <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada data ekstrakurikuler.</p>
+            @endforelse
           </div>
         </div>
       </div>
@@ -187,47 +192,61 @@
       </div>
     </div>
 
-    <!-- Catatan Pembina -->
     <div class="mt-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
       <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
         Catatan dari Pembina Ekstrakurikuler
       </div>
       {{-- Detail --}}
-      <div
-        class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
-        <!-- Foto Guru -->
-        <div class="flex-shrink-0">
-          <div
-            class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
-            A
-          </div>
-        </div>
-
-        <!-- Info Guru -->
-        <div class="flex flex-col justify-center pt-1.5 md:min-w-[180px]">
-          <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
-            Alex Setiawan</div>
-          <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
-            Pembina Basket</div>
-        </div>
-        <div class="grid w-full grid-cols-2 gap-4">
-          <div class="col-span-2 flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Catatan</b>
-            <p class="">Semangat Latihannya sangat bagus, teruskan</p>
+      @foreach ($catatanPembina as $catatan)
+        <div
+          class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
+          <!-- Foto Guru -->
+          <div class="flex-shrink-0">
+            <div
+              class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
+              A
+            </div>
           </div>
 
-          <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Alasan pemberian potensi</b>
-            <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">aktif</p>
+          <!-- Info Pembina -->
+          <div class="mb-4 flex flex-col justify-center pt-1.5 md:min-w-[180px]">
+            <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
+              {{ $catatan['pembina_nama'] }}
+            </div>
+            <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
+              {{ $catatan['pembina_ekskul'] }}
+            </div>
           </div>
 
-          <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Pengembangan Potensi</b>
-            <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">ikut ssb</p>
+          <!-- Detail Catatan -->
+          <div class="mb-6 grid w-full grid-cols-2 gap-4">
+            <!-- Catatan -->
+            <div class="col-span-2 flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+              <b class="text-gray-800 dark:text-white">Catatan</b>
+              <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                {{ $catatan['catatan'] }}
+              </p>
+            </div>
+
+            <!-- Alasan Pemberian Potensi -->
+            <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+              <b class="text-gray-800 dark:text-white">Alasan pemberian potensi</b>
+              <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                {{ $catatan['alasan'] }}
+              </p>
+            </div>
+
+            <!-- Pengembangan Potensi -->
+            <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+              <b class="text-gray-800 dark:text-white">Pengembangan Potensi</b>
+              <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                {{ $catatan['pengembangan'] }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+          @endforeach
+  </div>
   </div>
   </div>
   <script>
@@ -276,6 +295,5 @@
         }
       }
     });
-
   </script>
 @endsection

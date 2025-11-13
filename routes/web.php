@@ -36,11 +36,11 @@ Route::get('/pages/guru', function () {
 Route::get('/pages/siswa', [SiswaController::class, 'index'])->name('pages.siswa');
         
 Route::get('/pages/pembina', function () {
-    if (Auth::check() && Auth::user()->role === 'siswa') {
-        return view('pages.siswa');
+    if (Auth::check() && Auth::user()->role === 'pembina') {
+        return view('pages.pembina');
     }
     abort(403, 'Akses ditolak.');
-})->name('pembina');
+})->name('pages.pembina');
 
 
 Route::get('/tes-data', function () {

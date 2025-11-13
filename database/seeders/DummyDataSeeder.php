@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Arr;
 
 class DummyDataSeeder extends Seeder
 {
@@ -52,9 +53,10 @@ class DummyDataSeeder extends Seeder
                 'role' => 'pembina',
             ]);
 
+            // ✅ gunakan kolom 'nama' (bukan 'namaPembina')
             $pembinaId = DB::table('pembina')->insertGetId([
                 'user_id' => $userPembinaId,
-                'namaPembina' => $nama,
+                'nama' => $nama,
             ]);
 
             $pembinaIds[$nama] = $pembinaId;
@@ -120,7 +122,6 @@ class DummyDataSeeder extends Seeder
                         'catatan' => "Nilai UAS {$namaSiswa}",
                     ]);
 
-                    // Update siswa dengan UTS/UAS terakhir mapel
                     DB::table('siswa')->where('id', $siswaId)->update([
                         'uts_id' => $utsId,
                         'uas_id' => $uasId,
@@ -128,15 +129,16 @@ class DummyDataSeeder extends Seeder
                 }
 
                 // ===== CATATAN PEMBINA =====
-                $randomPembinaId = $pembinaIds[array_rand($pembinaIds)];
+                $randomPembinaId = Arr::random($pembinaIds);
                 DB::table('catatan_pembina')->insert([
                     'siswa_id' => $siswaId,
+                    'pembina_id' => $randomPembinaId, // ✅ tambahkan relasi pembina
                     'namaAnggota' => $namaSiswa,
                     'tingkat_partisipasi' => rand(80, 100),
-                    'tingkat_keterampilan' => 'Mahir',
-                    'catatan' => 'Aktif dalam kegiatan kelas dan ekskul',
-                    'potensi' => 'Kemampuan kepemimpinan dan kerja sama baik',
-                    'rekomendasi_pengembangan' => 'Dapat diberi tanggung jawab tambahan',
+                    'tingkat_keterampilan' => Arr::random(['Pemula', 'Menengah', 'Mahir']),
+                    'catatan' => 'Aktif dalam kegiatan ekskul dan menunjukkan semangat belajar tinggi.',
+                    'potensi' => 'Kemampuan kepemimpinan dan kerja sama yang baik.',
+                    'rekomendasi_pengembangan' => 'Dapat diberi tanggung jawab tambahan seperti ketua kelompok.',
                 ]);
             }
         }
@@ -153,16 +155,20 @@ class DummyDataSeeder extends Seeder
         foreach ($ekskulList as $namaEkskul => $namaPembina) {
             $pembinaId = $pembinaIds[$namaPembina];
             $ekskulId = DB::table('ekskul')->insertGetId([
-                'namaEkskul' => $namaEkskul,
+                'nama' => $namaEkskul, // ✅ sesuaikan dengan model Ekskul
                 'pembina_id' => $pembinaId,
             ]);
             $ekskulIds[$namaEkskul] = $ekskulId;
+
+            // ✅ sinkronkan ke tabel pembina
+            DB::table('pembina')->where('id', $pembinaId)->update([
+                'ekskul_id' => $ekskulId,
+            ]);
         }
 
-        // ===== ATTACH SISWA KE EKSKUL (pivot table siswa_ekskul) =====
+        // ===== ATTACH SISWA KE EKSKUL =====
         foreach ($siswaIds as $siswaId) {
-            // tiap siswa ikut 1–2 ekskul random
-            $chosenEkskul = array_rand($ekskulIds, rand(1,2));
+            $chosenEkskul = array_rand($ekskulIds, rand(1, 2));
             if (!is_array($chosenEkskul)) {
                 $chosenEkskul = [$chosenEkskul];
             }
@@ -171,8 +177,8 @@ class DummyDataSeeder extends Seeder
                 DB::table('siswa_ekskul')->insert([
                     'siswa_id' => $siswaId,
                     'ekskul_id' => $ekskulIds[$eks],
-                    'tingkat_keterampilan' => rand(50,100),
-                    'tingkat_partisipasi' => rand(50,100),
+                    'tingkat_keterampilan' => Arr::random(['Pemula', 'Menengah', 'Mahir']),
+                    'tingkat_partisipasi' => rand(50, 100),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
