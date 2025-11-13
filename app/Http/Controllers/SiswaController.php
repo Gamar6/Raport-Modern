@@ -8,7 +8,7 @@ class SiswaController extends Controller
 {
     public function index()
     {
-        $siswa = Siswa::with(['user', 'kelas', 'uas'])
+        $siswa = Siswa::with(['user', 'kelas', 'uas', 'ekskul'])
                     ->where('user_id', Auth::id())
                     ->first();
 
@@ -16,7 +16,7 @@ class SiswaController extends Controller
             return redirect()->route('login')->with('error', 'Siswa tidak ditemukan.');
         }
 
-        $rataRataUAS = $siswa->uas ? $siswa->uas->avg('nilai') : 0;
+        $rataRataUAS = $siswa->uas ? number_format($siswa->uas->avg('nilai'), 2) : '0.00';
 
         //Daftar potensi masing-masing mata pelajaran
         $mapelPotensi = [

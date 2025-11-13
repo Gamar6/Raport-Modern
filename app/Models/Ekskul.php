@@ -20,4 +20,12 @@ class Ekskul extends Model
     {
         return $this->belongsTo(Siswa::class, 'anggota_id');
     }
+
+    public function siswa()
+    {
+        return $this->belongsToMany(Siswa::class, 'siswa_ekskul')
+                    ->withPivot(['tingkat_keterampilan', 'tingkat_partisipasi'])
+                    ->withTimestamps();
+    }
+
 }

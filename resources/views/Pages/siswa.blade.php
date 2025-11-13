@@ -234,33 +234,34 @@
     const isDark = document.documentElement.classList.contains('dark');
 
     const ctx = document.getElementById('studentRadarChart');
-
-    // Ambil data dari PHP
-    const labels = @json($chartLabels);
-    const data = @json($chartData);
-
     new Chart(ctx, {
       type: 'radar',
       data: {
-        labels: labels,
+        labels: @json($chartLabels),
         datasets: [{
           label: 'Potensi Siswa (Nilai UAS)',
-          data: data,
-          backgroundColor: 'rgba(139, 92, 246, 0.2)',
-          borderColor: 'rgb(139, 92, 246)',
+          data: @json($chartData),
+          backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.2)',
+          borderColor: isDark ? 'rgb(139, 92, 246)' : 'rgb(139, 92, 246)',
           borderWidth: 2,
-          pointBackgroundColor: 'rgb(139, 92, 246)',
+          pointBackgroundColor: isDark ? 'rgb(139, 92, 246)' : 'rgb(139, 92, 246)',
         }]
       },
       options: {
+        plugins: {
+          legend: {
+            labels: {
+              color: isDark ? '#D1D5DB' : '#374151'
+            }
+          }
+        },
         scales: {
           r: {
             suggestedMin: 0,
             suggestedMax: 100,
             ticks: {
               stepSize: 20,
-              backdropColor: 'transparent',
-              color: isDark ? '#D1D5DB' : '#374151',
+              color: isDark ? '#D1D5DB' : '#374151'
             },
             grid: {
               color: isDark ? '#4C1D95' : '#E9D5FF'
@@ -275,5 +276,6 @@
         }
       }
     });
+
   </script>
 @endsection

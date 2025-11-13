@@ -34,8 +34,25 @@ class Siswa extends Model
     }
 
     // Relasi ke Catatan Pembina
+    // public function catatanPembina()
+    // {
+    //     return $this->hasOne(CatatanPembina::class, 'siswa_id');
+    // }
+
+    public function ekskul()
+    {
+        return $this->belongsToMany(
+            Ekskul::class,
+            'siswa_ekskul',
+            'siswa_id',
+            'ekskul_id'
+        )->withPivot('tingkat_keterampilan','tingkat_partisipasi')->withTimestamps();
+    }
+
     public function catatanPembina()
     {
-        return $this->hasOne(CatatanPembina::class, 'siswa_id');
+        return $this->hasMany(CatatanPembina::class, 'siswa_id');
     }
 }
+
+
