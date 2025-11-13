@@ -11,93 +11,245 @@ class DummyDataSeeder extends Seeder
     public function run(): void
     {
         // === USERS ===
-        
         $userAdmin = DB::table('users')->insertGetId([
             'username' =>'Admin1',
             'email' => 'admin@mail.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
-        $userGuru = DB::table('users')->insertGetId([
-            'username' => 'Pak Budi',
-            'email' => 'guru@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'guru',
-        ]);
-
-        $userSiswa = DB::table('users')->insertGetId([
-            'username' => 'Andi',
-            'email' => 'siswa@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'siswa',
-        ]);
-
-        $userPembina = DB::table('users')->insertGetId([
-            'username' => 'Bu Rina',
-            'email' => 'pembina@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'pembina',
-        ]);
 
         // === GURU ===
-        $guruId = DB::table('guru')->insertGetId([
-            'user_id' => $userGuru,
-            'namaGuru' => 'Pak Budi',
-            'mapel' => 'Matematika',
-            'nip' => '123456789',
-        ]);
+        $mapelList = [
+            'Bahasa Indonesia',
+            'Matematika',
+            'IPA',
+            'IPS',
+            'Seni Budaya',
+            'PJOK',
+        ];
+
+        $guruIds = [];
+        foreach ($mapelList as $index => $mapel) {
+            $userGuru = DB::table('users')->insertGetId([
+                'username' => "Guru" . ($index + 1),
+                'email' => "guru{$index}@example.com",
+                'password' => Hash::make('password'),
+                'role' => 'guru',
+            ]);
+
+            $guruId = DB::table('guru')->insertGetId([
+                'user_id' => $userGuru,
+                'namaGuru' => "Guru {$mapel}",
+                'mapel' => $mapel,
+                'nip' => '1000' . ($index + 1),
+            ]);
+
+            $guruIds[$mapel] = $guruId;
+        }
 
         // === PEMBINA ===
-        $pembinaId = DB::table('pembina')->insertGetId([
-            'user_id' => $userPembina,
-            'namaPembina' => 'Bu Rina',
-        ]);
+        $pembinaList = ['Bu Rina', 'Pak Dedi'];
+        $pembinaIds = [];
+        foreach ($pembinaList as $index => $nama) {
+            $userPembina = DB::table('users')->insertGetId([
+                'username' => $nama,
+                'email' => "pembina{$index}@example.com",
+                'password' => Hash::make('password'),
+                'role' => 'pembina',
+            ]);
+
+            $pembinaId = DB::table('pembina')->insertGetId([
+                'user_id' => $userPembina,
+                'namaPembina' => $nama,
+            ]);
+
+            $pembinaIds[] = $pembinaId;
+        }
 
         // === KELAS ===
-        $kelasId = DB::table('kelas')->insertGetId([
-            'namaKelas' => 'X IPA 1',
-            'waliKelas_id' => $guruId,
-        ]);
+        $kelasList = ['2A', '2B', '2C'];
+        $kelasIds = [];
+        foreach ($kelasList as $index => $namaKelas) {
+            // Wali kelas pilih guru matematika secara acak
+            $waliKelasId = $guruIds['Matematika'];
+
+            $kelasId = DB::table('kelas')->insertGetId([
+                'namaKelas' => $namaKelas,
+                'waliKelas_id' => $waliKelasId,
+            ]);
+
+            $kelasIds[$namaKelas] = $kelasId;
+        }
 
         // === SISWA ===
-        $siswaId = DB::table('siswa')->insertGetId([
-            'user_id' => $userSiswa,
-            'namaSiswa' => 'Andi',
-            'nis' => '202501',
-            'kelas_id' => $kelasId,
-        ]);
+        $siswaList = [
+            '2A' => ['Andi', 'Budi'],
+            '2B' => ['Citra', 'Deni'],
+            '2C' => ['Eka', 'Fajar'],
+        ];
+
+        $siswaIds = [];
+        foreach ($siswaList as $kelas => $siswas) {
+            foreach ($siswas as $index => $namaSiswa) {
+                $userSiswa = DB::table('users')->insertGetId([
+                    'username' => $namaSiswa,
+                    'email' => strtolower($namaSiswa) . "@example.com",
+                    'password' => Hash::make('password'),
+                    'role' => 'siswa',
+                ]);
+
+                // Menambahkan jenis_kelamin untuk siswa
+                $jenisKelamin = ($index % 2 == 0) ? 'L' : 'P'; // Alternating gender for simplicity
+
+                $siswaId = DB::table('siswa')->insertGetId([
+                    'user_id' => $userSiswa,
+                    'namaSiswa' => $namaSiswa,
+                    'nis' => '20250' . ($index + 1 + array_search($kelas, array_keys($siswaList)) * 2),
+                    'kelas_id' => $kelasIds[$kelas],
+                    'jenis_kelamin' => $jenisKelamin, // Added gender
+                ]);
+
+                $siswaIds[] = $siswaId;
+
+                // === UTS & UAS ===
+                $utsId = DB::table('uts')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'Matematika',
+                    'nilai' => rand(70, 90),
+                    'guru_id' => $guruIds['Matematika'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UTS ' . $namaSiswa, // Jika kolom catatan ada
+                ]);
+
+                $uasId = DB::table('uas')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'Matematika',
+                    'nilai' => rand(75, 95),
+                    'guru_id' => $guruIds['Matematika'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UAS ' . $namaSiswa,
+                ]);
+
+                $utsId = DB::table('uts')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'IPA',
+                    'nilai' => rand(70, 90),
+                    'guru_id' => $guruIds['IPA'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UTS ' . $namaSiswa, // Jika kolom catatan ada
+                ]);
+
+                $uasId = DB::table('uas')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'IPA',
+                    'nilai' => rand(75, 95),
+                    'guru_id' => $guruIds['IPA'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UAS ' . $namaSiswa,
+                ]);
+
+                $utsId = DB::table('uts')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'Bahasa Indonesia',
+                    'nilai' => rand(70, 90),
+                    'guru_id' => $guruIds['Bahasa Indonesia'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UTS ' . $namaSiswa, // Jika kolom catatan ada
+                ]);
+
+                $uasId = DB::table('uas')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'Bahasa Indonesia',
+                    'nilai' => rand(75, 95),
+                    'guru_id' => $guruIds['Bahasa Indonesia'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UAS ' . $namaSiswa,
+                ]);
+                
+                $utsId = DB::table('uts')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'IPS',
+                    'nilai' => rand(70, 90),
+                    'guru_id' => $guruIds['IPS'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UTS ' . $namaSiswa, // Jika kolom catatan ada
+                ]);
+
+                $uasId = DB::table('uas')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'IPS',
+                    'nilai' => rand(75, 95),
+                    'guru_id' => $guruIds['IPS'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UAS ' . $namaSiswa,
+                ]);
+                
+                $utsId = DB::table('uts')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'PJOK',
+                    'nilai' => rand(70, 90),
+                    'guru_id' => $guruIds['PJOK'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UTS ' . $namaSiswa, // Jika kolom catatan ada
+                ]);
+
+                $uasId = DB::table('uas')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'PJOK',
+                    'nilai' => rand(75, 95),
+                    'guru_id' => $guruIds['PJOK'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UAS ' . $namaSiswa,
+                ]);
+                
+                $utsId = DB::table('uts')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'Seni Budaya',
+                    'nilai' => rand(70, 90),
+                    'guru_id' => $guruIds['Seni Budaya'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UTS ' . $namaSiswa, // Jika kolom catatan ada
+                ]);
+
+                $uasId = DB::table('uas')->insertGetId([
+                    'siswa_id' => $siswaId,
+                    'namaSiswa' => $namaSiswa,
+                    'mapel' => 'Seni Budaya',
+                    'nilai' => rand(75, 95),
+                    'guru_id' => $guruIds['Seni Budaya'], // Menambahkan guru_id
+                    'catatan' => 'Nilai UAS ' . $namaSiswa,
+                ]);          
+
+                DB::table('siswa')->where('id', $siswaId)->update([
+                    'uts_id' => $utsId,
+                    'uas_id' => $uasId,
+                ]);
+
+                // === CATATAN PEMBINA ===
+                $pembinaId = $pembinaIds[array_rand($pembinaIds)];
+                DB::table('catatan_pembina')->insert([
+                    'siswa_id' => $siswaId,
+                    'namaAnggota' => $namaSiswa,
+                    'tingkat_partisipasi' => rand(80, 100),
+                    'tingkat_keterampilan' => 'Mahir',
+                    'catatan' => 'Aktif dalam kegiatan kelas dan ekskul',
+                    'potensi' => 'Kemampuan kepemimpinan dan kerja sama baik',
+                    'rekomendasi_pengembangan' => 'Dapat diberi tanggung jawab tambahan',
+                ]);
+            }
+        }
 
         // === EKSKUL ===
-        DB::table('ekskul')->insert([
-            'namaEkskul' => 'Pramuka',
-            'pembina_id' => $pembinaId,
-            'anggota_id' => $siswaId,
-        ]);
-
-        // === NILAI (UTS & UAS) ===
-        DB::table('uts')->insert([
-            'siswa_id' => $siswaId,
-            'mapel' => 'Matematika',
-            'nilai' => 85,
-            'catatan' => 'Perlu meningkatkan konsentrasi saat ujian.',
-        ]);
-
-        DB::table('uas')->insert([
-            'siswa_id' => $siswaId,
-            'mapel' => 'Matematika',
-            'nilai' => 90,
-            'catatan' => 'Kemajuan signifikan dari UTS!',
-        ]);
-
-        // === CATATAN PEMBINA ===
-        DB::table('catatan_pembina')->insert([
-            'siswa_id' => $siswaId,
-            'namaAnggota' => 'Andi',
-            'tingkat_partisipasi' => '100',
-            'tingkat_keterampilan' => 'Mahir',
-            'catatan' => 'Selalu hadir dan disiplin dalam setiap kegiatan.',
-            'potensi' => 'Memiliki kemampuan kepemimpinan yang baik.',
-            'rekomendasi_pengembangan' => 'Dapat diberi tanggung jawab sebagai ketua regu tahun depan.',
-        ]);
+        $ekskulList = ['Pramuka', 'Basket', 'Marching Band', 'Robotics'];
+        foreach ($ekskulList as $index => $namaEkskul) {
+            foreach ($siswaIds as $siswaId) {
+                $pembinaId = $pembinaIds[$index % count($pembinaIds)];
+                DB::table('ekskul')->insert([
+                    'namaEkskul' => $namaEkskul,
+                    'pembina_id' => $pembinaId,
+                    'anggota_id' => $siswaId,
+                ]);
+            }
+        }
     }
 }

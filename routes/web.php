@@ -5,29 +5,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PembinaController;
-use App\Models\Ekskul;
-use App\Models\Pembina;
-use Faker\Guesser\Name;
+use App\Models\Siswa;
+
 
 Route::get('/', function () {
     return view('home');
 });
-
-// // Dashboard Guru
-// Route::get('/guru', function () {
-//     return view('pages.guru');
-// })->name('guru');
-
-// // Dashboard Pembina
-// Route::get('/pembina', function () {
-//     return view('pages.pembina');
-// })->name('pembina');
-
-// // Dashboard Orang Tua / Siswa
-// Route::get('/siswa', function () {
-//     return view('pages.siswa');
-// })->name('pages.siswa');
-
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -49,12 +32,20 @@ Route::get('/pages/guru', function () {
 })->name('pages.guru');
 
 
+
 Route::get('/pages/siswa', function () {
     if (Auth::check() && Auth::user()->role === 'siswa') {
-        return view('pages.siswa');
+        // Ambil siswa yang terkait dengan user login
+        $siswa = Siswa::with(['user', 'kelas', 'uas'])
+                       ->where('user_id', Auth::id())
+                       ->first(); // ambil satu siswa saja
+
+        return view('pages.siswa', compact('siswa'));
     }
+
     abort(403, 'Akses ditolak.');
 })->name('pages.siswa');
+
 
 Route::get('/pages/pembina', function () {
     if (Auth::check() && Auth::user()->role === 'siswa') {

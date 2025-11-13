@@ -9,9 +9,11 @@ return new class extends Migration {
         Schema::create('uts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('siswa_id')->nullable();
-            $table->string('namaSiswa')->nullable(); // <— tambahkan nullable
+            $table->string('namaSiswa')->nullable(); // nama siswa nullable
             $table->string('mapel')->nullable();
             $table->integer('nilai')->nullable();
+            $table->unsignedBigInteger('guru_id')->nullable(); // kolom guru_id
+            $table->string('catatan')->nullable();
             $table->timestamps();
         });
     }

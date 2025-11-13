@@ -8,9 +8,11 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('uas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('siswa_id')->nullable();
             $table->string('namaSiswa')->nullable(); 
-            $table->integer('nilai');
             $table->string('mapel');
+            $table->integer('nilai');
+            $table->unsignedBigInteger('guru_id')->nullable();
             $table->string('catatan')->nullable();
             $table->timestamps();
         });

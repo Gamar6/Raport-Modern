@@ -10,7 +10,7 @@ return new class extends Migration
     {
         // Relasi GURU ↔ USERS
         Schema::table('guru', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on(table: 'users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         // Relasi PEMBINA ↔ USERS
@@ -18,20 +18,15 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
-        // Relasi SISWA ↔ USERS
+        // Relasi SISWA ↔ USERS & KELAS
         Schema::table('siswa', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('set null');
         });
 
         // Relasi KELAS ↔ GURU (wali kelas)
         Schema::table('kelas', function (Blueprint $table) {
             $table->foreign('waliKelas_id')->references('id')->on('guru')->onDelete('set null');
-        });
-
-        // Relasi KELAS ↔ SISWA (opsional, kalau 1 siswa = 1 kelas)
-        Schema::table('kelas', function (Blueprint $table) {
-            $table->unsignedBigInteger('siswa_id')->nullable()->after('waliKelas_id');
-            $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('set null');
         });
 
         // Relasi EKSKUL ↔ PEMBINA dan SISWA
@@ -43,12 +38,13 @@ return new class extends Migration
         // Relasi UTS ↔ SISWA
         Schema::table('uts', function (Blueprint $table) {
             $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('cascade');
+            $table->foreign('guru_id')->references('id')->on('guru')->onDelete('set null');
         });
 
         // Relasi UAS ↔ SISWA
         Schema::table('uas', function (Blueprint $table) {
-            $table->unsignedBigInteger('siswa_id')->nullable()->after('id');
             $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('cascade');
+            $table->foreign('guru_id')->references('id')->on('guru')->onDelete('set null');
         });
 
         // Relasi CATATAN PEMBINA ↔ SISWA
@@ -59,46 +55,30 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('guru', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
-
-        Schema::table('pembina', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
-
         Schema::table('siswa', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
+            $table->dropForeign(['kelas_id']);
         });
 
         Schema::table('kelas', function (Blueprint $table) {
             $table->dropForeign(['waliKelas_id']);
-            $table->dropForeign(['siswa_id']);
-            $table->dropColumn(['waliKelas_id', 'siswa_id']);
         });
 
         Schema::table('ekskul', function (Blueprint $table) {
             $table->dropForeign(['pembina_id']);
             $table->dropForeign(['anggota_id']);
-            $table->dropColumn(['pembina_id', 'anggota_id']);
         });
 
         Schema::table('uts', function (Blueprint $table) {
             $table->dropForeign(['siswa_id']);
-            $table->dropColumn('siswa_id');
         });
 
         Schema::table('uas', function (Blueprint $table) {
             $table->dropForeign(['siswa_id']);
-            $table->dropColumn('siswa_id');
         });
 
         Schema::table('catatan_pembina', function (Blueprint $table) {
             $table->dropForeign(['siswa_id']);
-            $table->dropColumn('siswa_id');
         });
     }
 };

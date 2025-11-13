@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DummyDataSeeder::class);
 
         // Jalankan seeder tambahan untuk relasi dan nilai
-        $this->call(TestRelasiSeeder::class);
+        // $this->call(TestRelasiSeeder::class);
     }
 }

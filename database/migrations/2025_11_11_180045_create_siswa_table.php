@@ -9,8 +9,9 @@ return new class extends Migration {
         Schema::create('siswa', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('kelas_id')->nullable();
+            $table->unsignedBigInteger('kelas_id')->nullable(); // relasi ke kelas
             $table->string('namaSiswa')->nullable();
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable(); // tambahan kolom
             $table->integer('nis')->unique();
             $table->string('ekskul')->nullable();
             $table->string('prestasi')->nullable();
