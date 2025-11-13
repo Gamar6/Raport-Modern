@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PembinaController;
+use App\Http\Controllers\SiswaController;
 use App\Models\Siswa;
 
 
@@ -24,6 +25,7 @@ Route::get('/pages/admin', function () {
     abort(403, 'Akses ditolak.');
 })->name('pages.admin');
 
+
 Route::get('/pages/guru', function () {
     if (Auth::check() && Auth::user()->role === 'guru') {
         return view('pages.guru');
@@ -31,22 +33,8 @@ Route::get('/pages/guru', function () {
     abort(403, 'Akses ditolak.');
 })->name('pages.guru');
 
-
-
-Route::get('/pages/siswa', function () {
-    if (Auth::check() && Auth::user()->role === 'siswa') {
-        // Ambil siswa yang terkait dengan user login
-        $siswa = Siswa::with(['user', 'kelas', 'uas'])
-                       ->where('user_id', Auth::id())
-                       ->first(); // ambil satu siswa saja
-
-        return view('pages.siswa', compact('siswa'));
-    }
-
-    abort(403, 'Akses ditolak.');
-})->name('pages.siswa');
-
-
+Route::get('/pages/siswa', [SiswaController::class, 'index'])->name('pages.siswa');
+        
 Route::get('/pages/pembina', function () {
     if (Auth::check() && Auth::user()->role === 'siswa') {
         return view('pages.siswa');

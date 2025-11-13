@@ -8,17 +8,53 @@ class SiswaController extends Controller
 {
     public function index()
     {
-        // Ambil data siswa yang terhubung dengan user yang sedang login
-        $siswa = Siswa::with(['user', 'kelas'])
-                      ->where('user_id', Auth::id()) // Pastikan ada relasi 'user_id' di tabel siswa
-                      ->first(); // Ambil satu data siswa berdasarkan user yang sedang login
+        $siswa = Siswa::with(['user', 'kelas', 'uas'])
+                    ->where('user_id', Auth::id())
+                    ->first();
 
-        // Jika siswa tidak ditemukan, bisa redirect ke halaman lain
         if (!$siswa) {
             return redirect()->route('login')->with('error', 'Siswa tidak ditemukan.');
         }
 
-        // Kirim data siswa ke view
-        return view('pages.siswa', compact('siswa'));
+        $rataRataUAS = $siswa->uas ? $siswa->uas->avg('nilai') : 0;
+
+        //Daftar potensi masing-masing mata pelajaran
+        $mapelPotensi = [
+            'Matematika' => ['Logika', 'Analisis'],
+            'IPA' => ['Observasi', 'Eksperimen'],
+            'Bahasa Indonesia' => ['Literasi', 'Ekspresi'],
+            'IPS' => ['Sosial', 'Kolaborasi'],
+            'PJOK' => ['Motorik', 'Disiplin'],
+            'Seni Budaya' => ['Kreativitas', 'Estetika']
+        ];
+
+        $uas = $siswa->uas;
+        $top3UAS = $uas->sortByDesc('nilai')->take(3);
+
+        $topPotensi = $top3UAS->map(function($item) use ($mapelPotensi) {
+            return [
+                'mapel' => $item->mapel,
+                'potensi' => $mapelPotensi[$item->mapel] ?? ['Umum'], // sekarang array
+                'nilai' => $item->nilai,
+            ];
+        }); 
+
+        $uas = $siswa->uas;
+        
+        $potensiData = collect();
+        foreach ($uas as $item) {
+            $potensi = $mapelPotensi[$item->mapel][0] ?? 'Umum'; // cuma ambil potensi pertama
+            $potensiData->push([
+                'potensi' => $potensi,
+                'nilai' => $item->nilai,
+            ]);
+        }
+
+        $chartLabels = $potensiData->pluck('potensi');
+        $chartData = $potensiData->pluck('nilai');
+
+
+
+        return view('pages.siswa', compact('siswa', 'rataRataUAS', 'topPotensi', 'potensiData', 'chartLabels', 'chartData'));
     }
 }

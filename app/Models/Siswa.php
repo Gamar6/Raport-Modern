@@ -24,7 +24,7 @@ class Siswa extends Model
     // Relasi ke UTS
     public function uts()
     {
-        return $this->belongsTo(Uts::class, 'uts_id');
+        return $this->hasmany(Uts::class, 'siswa_id');
     }
 
     // Relasi ke UAS
