@@ -14,4 +14,10 @@ class Uas extends Model
     {
         return $this->belongsTo(Siswa::class, 'siswa_id');
     }
+
+    public function guru()
+    {
+        return $this->belongsTo(\App\Models\Guru::class, 'guru_id');
+    }
+
 }

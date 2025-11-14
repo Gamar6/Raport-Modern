@@ -160,36 +160,55 @@
       <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
         Catatan dari Guru
       </div>
-      {{-- Detail --}}
-      <div
-        class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
-        <!-- Foto Guru -->
-        <div class="flex-shrink-0">
-          <div
-            class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
-            PB
-          </div>
-        </div>
 
-        <!-- Info Guru -->
-        <div class="flex flex-col justify-center pt-1.5 md:min-w-[180px]">
-          <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
-            Pak budi</div>
-          <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
-            Guru MTK</div>
-        </div>
-        <div class="grid w-full grid-cols-2 gap-4">
-          <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Catatan UTS Siswa</b>
-            <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">sangat berkembang</p>
+      {{-- Loop semua catatan dari UTS --}}
+      @foreach ($catatanUTS as $uts)
+        <div
+          class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
+
+          <!-- Foto Guru -->
+          <div class="flex-shrink-0">
+            <div
+              class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
+              {{ strtoupper(substr($uts['guru_nama'], 0, 2)) }}
+            </div>
           </div>
 
-          <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
-            <b class="text-gray-800 dark:text-white">Catatan UAS Siswa</b>
-            <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">Performa Siswa Menurun</p>
+          <!-- Info Guru -->
+          <div class="flex flex-col justify-center pt-1.5 md:min-w-[180px]">
+            <div class="text-base font-semibold text-gray-800 md:text-lg dark:text-white">
+              {{ $uts['guru_nama'] }}
+            </div>
+            <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
+              Guru {{ $uts['mapel'] }}
+            </div>
+          </div>
+
+          <div class="grid w-full grid-cols-2 gap-4">
+            <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+              <b class="text-gray-800 dark:text-white">Catatan UTS Siswa</b>
+              <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                {{ $uts['catatan'] ?? '-' }}
+              </p>
+            </div>
+
+            {{-- Cari catatan UAS dari mapel yang sama --}}
+            @php
+              $uasMapel = $catatanUAS->firstWhere('mapel', $uts['mapel']);
+            @endphp
+            <div class="flex h-full flex-col rounded-lg bg-gray-50 p-4 pt-6 shadow-sm dark:bg-gray-800">
+              <b class="text-gray-800 dark:text-white">Catatan UAS Siswa</b>
+              <p class="mt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
+                {{ $uasMapel['catatan'] ?? '-' }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      @endforeach
+
+      @if ($catatanUTS->isEmpty() && $catatanUAS->isEmpty())
+        <p class="mt-4 text-gray-600 dark:text-gray-400">Belum ada catatan dari guru.</p>
+      @endif
     </div>
 
     <div class="mt-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -204,7 +223,7 @@
           <div class="flex-shrink-0">
             <div
               class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
-              A
+              {{ strtoupper(substr($catatan['pembina_nama'], 0, 2)) }}
             </div>
           </div>
 
@@ -245,8 +264,8 @@
             </div>
           </div>
         </div>
-          @endforeach
-  </div>
+      @endforeach
+    </div>
   </div>
   </div>
   <script>

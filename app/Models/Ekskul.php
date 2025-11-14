@@ -15,20 +15,6 @@ class Ekskul extends Model
         return $this->belongsTo(Pembina::class, 'pembina_id');
     }
 
-
-    // Relasi ke Anggota Siswa
-    // public function anggota()
-    // {
-    //     return $this->belongsTo(Siswa::class, 'anggota_id');
-    // }
-
-    // public function siswa()
-    // {
-    //     return $this->belongsToMany(Siswa::class, 'siswa_ekskul')
-    //                 ->withPivot(['tingkat_keterampilan', 'tingkat_partisipasi'])
-    //                 ->withTimestamps();
-    // }
-
     //Relasi ke ekskul
     public function ekskul()
     {

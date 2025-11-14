@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PembinaController;
 use App\Http\Controllers\SiswaController;
 use App\Models\Siswa;
+use App\Http\Controllers\AdminController;
 
 
 Route::get('/', function () {
@@ -18,13 +19,8 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Halaman masing-masing role
-Route::get('/pages/admin', function () {
-    if (Auth::check() && Auth::user()->role === 'admin') {
-        return view('pages.admin');
-    }
-    abort(403, 'Akses ditolak.');
-})->name('pages.admin');
-
+Route::get('/admin/admin', [AdminController::class, 'index'])
+    ->name('admin.admin');
 
 Route::get('/pages/guru', function () {
     if (Auth::check() && Auth::user()->role === 'guru') {

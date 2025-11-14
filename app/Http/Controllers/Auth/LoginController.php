@@ -25,7 +25,7 @@ class LoginController extends Controller
 
             // arahkan user berdasarkan role
             if ($user->role === 'admin') {
-                return redirect()->route('pages.admin');
+                return redirect()->route('admin.admin');
             } elseif ($user->role === 'guru') {
                 return redirect()->route('Pages.guru');
             } elseif ($user->role === 'pembina') {

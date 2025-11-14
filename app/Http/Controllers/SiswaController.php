@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPSTORM_META\map;
+
 class SiswaController extends Controller
 {
     public function index()
@@ -78,6 +80,36 @@ class SiswaController extends Controller
             ];
         });
 
+        // 🔹 Ambil catatan dari tabel UTS dan UAS milik siswa ini
+        $catatanUTS = $siswa->uts()
+            ->with('guru.user')
+            ->whereNotNull('catatan')
+            ->get()
+            ->map(function ($item) {
+                $guruNama = $item->guru?->user?->username ?? 'Guru Tidak Diketahui';
+
+                return [
+                    'mapel' => $item->mapel,
+                    'catatan' => $item->catatan,
+                    'guru_nama' => $guruNama,
+                ];
+            });
+
+        $catatanUAS = $siswa->uas()
+            ->with('guru.user')
+            ->whereNotNull('catatan')
+            ->get()
+            ->map(function ($item) {
+                $guruNama = $item->guru?->user?->username ?? 'Guru Tidak Diketahui';
+
+                return [
+                    'mapel' => $item->mapel,
+                    'catatan' => $item->catatan,
+                    'guru_nama' => $guruNama,
+                ];
+            });
+
+
         return view('pages.siswa', compact(
             'siswa',
             'rataRataUAS',
@@ -86,7 +118,9 @@ class SiswaController extends Controller
             'chartLabels',
             'chartData',
             'ekskuls',
-            'catatanPembina' // <— tambahkan ini
+            'catatanPembina',
+            'catatanUAS',
+            'catatanUTS'
         ));
     }
 }
