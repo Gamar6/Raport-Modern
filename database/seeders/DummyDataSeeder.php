@@ -53,7 +53,6 @@ class DummyDataSeeder extends Seeder
                 'role' => 'pembina',
             ]);
 
-            // ✅ gunakan kolom 'nama' (bukan 'namaPembina')
             $pembinaId = DB::table('pembina')->insertGetId([
                 'user_id' => $userPembinaId,
                 'nama' => $nama,
@@ -66,24 +65,18 @@ class DummyDataSeeder extends Seeder
         $kelasList = ['2A', '2B', '2C'];
         $kelasIds = [];
         foreach ($kelasList as $namaKelas) {
-            // Assign wali kelas yang berbeda untuk setiap kelas
-            $waliKelasId = Arr::random($guruIds); // Pilih wali kelas secara acak dari guru yang ada
+            $waliKelasId = Arr::random($guruIds);
             $kelasIds[$namaKelas] = DB::table('kelas')->insertGetId([
                 'namaKelas' => $namaKelas,
                 'waliKelas_id' => $waliKelasId,
             ]);
         }
 
-        // ===== SISWA =====
-        $siswaList = [
-            '2A' => ['Andi', 'Budi'],
-            '2B' => ['Citra', 'Deni'],
-            '2C' => ['Eka', 'Fajar'],
-        ];
-
+        // ===== SISWA (20-30 per kelas) =====
         $siswaIds = [];
-        foreach ($siswaList as $kelas => $siswas) {
-            foreach ($siswas as $index => $namaSiswa) {
+        foreach ($kelasList as $kelas) {
+            for ($i = 1; $i <= rand(20, 30); $i++) {
+                $namaSiswa = "Siswa {$kelas}{$i}";
                 $userSiswaId = DB::table('users')->insertGetId([
                     'username' => $namaSiswa,
                     'email' => strtolower($namaSiswa) . "@example.com",
@@ -91,12 +84,12 @@ class DummyDataSeeder extends Seeder
                     'role' => 'siswa',
                 ]);
 
-                $jenisKelamin = ($index % 2 == 0) ? 'L' : 'P';
+                $jenisKelamin = ($i % 2 == 0) ? 'P' : 'L';
 
                 $siswaId = DB::table('siswa')->insertGetId([
                     'user_id' => $userSiswaId,
                     'namaSiswa' => $namaSiswa,
-                    'nis' => '20250' . ($index + 1 + array_search($kelas, array_keys($siswaList)) * 2),
+                    'nis' => '2025' . str_pad($i + array_search($kelas, $kelasList) * 100, 3, '0', STR_PAD_LEFT),
                     'kelas_id' => $kelasIds[$kelas],
                     'jenis_kelamin' => $jenisKelamin,
                 ]);
@@ -109,7 +102,7 @@ class DummyDataSeeder extends Seeder
                         'siswa_id' => $siswaId,
                         'namaSiswa' => $namaSiswa,
                         'mapel' => $mapel,
-                        'nilai' => rand(70, 90),
+                        'nilai' => rand(50, 100),
                         'guru_id' => $guruIds[$mapel],
                         'catatan' => "Nilai UTS {$namaSiswa}",
                     ]);
@@ -118,7 +111,7 @@ class DummyDataSeeder extends Seeder
                         'siswa_id' => $siswaId,
                         'namaSiswa' => $namaSiswa,
                         'mapel' => $mapel,
-                        'nilai' => rand(10, 95),
+                        'nilai' => rand(50, 100),
                         'guru_id' => $guruIds[$mapel],
                         'catatan' => "Nilai UAS {$namaSiswa}",
                     ]);
@@ -128,19 +121,6 @@ class DummyDataSeeder extends Seeder
                         'uas_id' => $uasId,
                     ]);
                 }
-
-                // ===== CATATAN PEMBINA =====
-                $randomPembinaId = Arr::random($pembinaIds);
-                DB::table('catatan_pembina')->insert([
-                    'siswa_id' => $siswaId,
-                    'pembina_id' => $randomPembinaId, // ✅ tambahkan relasi pembina
-                    'namaAnggota' => $namaSiswa,
-                    'tingkat_partisipasi' => rand(80, 100),
-                    'tingkat_keterampilan' => Arr::random(['Pemula', 'Menengah', 'Mahir']),
-                    'catatan' => 'Aktif dalam kegiatan ekskul dan menunjukkan semangat belajar tinggi.',
-                    'potensi' => 'Kemampuan kepemimpinan dan kerja sama yang baik.',
-                    'rekomendasi_pengembangan' => 'Dapat diberi tanggung jawab tambahan seperti ketua kelompok.',
-                ]);
             }
         }
 
@@ -156,39 +136,53 @@ class DummyDataSeeder extends Seeder
         foreach ($ekskulList as $namaEkskul => $namaPembina) {
             $pembinaId = $pembinaIds[$namaPembina];
             $ekskulId = DB::table('ekskul')->insertGetId([
-                'nama' => $namaEkskul, // ✅ sesuaikan dengan model Ekskul
+                'nama' => $namaEkskul,
                 'pembina_id' => $pembinaId,
             ]);
             $ekskulIds[$namaEkskul] = $ekskulId;
 
-            // ✅ sinkronkan ke tabel pembina
             DB::table('pembina')->where('id', $pembinaId)->update([
                 'ekskul_id' => $ekskulId,
             ]);
         }
 
-        // ===== ATTACH SISWA KE EKSKUL =====
+        // ===== ATTACH SISWA KE EKSKUL (1-3 ekskul per siswa) =====
         foreach ($siswaIds as $siswaId) {
-            $chosenEkskul = array_rand($ekskulIds, rand(1, 2));
+            $jumlahEkskul = rand(1, 3);
+            $chosenEkskul = array_rand($ekskulIds, $jumlahEkskul);
             if (!is_array($chosenEkskul)) {
                 $chosenEkskul = [$chosenEkskul];
             }
 
             foreach ($chosenEkskul as $eks) {
-                DB::table('siswa_ekskul')->insert([
+                $siswaEkskulId = DB::table('siswa_ekskul')->insertGetId([
                     'siswa_id' => $siswaId,
                     'ekskul_id' => $ekskulIds[$eks],
-                    'tingkat_keterampilan' => Arr::random(['Pemula', 'Menengah', 'Mahir']),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                // ===== PENILAIAN PEMBINA =====
+                DB::table('penilaian_ekskul')->insert([
+                    'siswa_ekskul_id' => $siswaEkskulId,
                     'tingkat_partisipasi' => rand(50, 100),
+                    'tingkat_keterampilan' => Arr::random(['Pemula', 'Menengah', 'Mahir']),
+                    'catatan' => Arr::random([
+                        'Sangat aktif, selalu hadir tepat waktu.',
+                        'Perlu peningkatan dalam kerja sama tim.',
+                        'Menunjukkan kreativitas tinggi.',
+                        'Perlu lebih fokus pada latihan.',
+                        'Berpotensi menjadi ketua kelompok.'
+                    ]),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
         }
+
         // ===== GURU MENGAJAR KELAS =====
-        $kelasIdsArray = array_values($kelasIds); // ambil ID kelas sebagai array
+        $kelasIdsArray = array_values($kelasIds);
         foreach ($guruIds as $mapel => $guruId) {
-            // Pilih 1-2 kelas acak yang diajar setiap guru
             $kelasDiajar = Arr::random($kelasIdsArray, rand(3, 3));
             if (!is_array($kelasDiajar)) {
                 $kelasDiajar = [$kelasDiajar];
@@ -202,6 +196,6 @@ class DummyDataSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
             }
-        }        
+        }
     }
 }

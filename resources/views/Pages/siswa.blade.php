@@ -120,29 +120,26 @@
         <!-- Ekstrakurikuler -->
         <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
           <h3 class="mb-2 text-xl font-semibold text-gray-800 dark:text-white">Ekstrakurikuler</h3>
-          <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Tingkat Partisipasi & Tingkat Keterampilan</p>
+          <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Tingkat Partisipasi Siswa dalam Ekstrakurikuler</p>
 
-          <div class="space-y-4">
-            @forelse ($ekskuls as $item)
-              <div class="border-b pb-4">
-                <div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                  <span>{{ $item['nama'] }}</span>
-                  <span class="text-purple-700 dark:text-purple-300">{{ $item['tingkat_keterampilan'] ?? '-' }}</span>
-                </div>
+          @forelse ($ekskuls as $item)
+            <div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span>{{ $item['nama'] }}</span>
+              <span class="text-purple-700 dark:text-purple-300">
+                {{ $item['tingkat_keterampilan'] }}
+              </span>
+            </div>
 
-                <div class="text-sm text-gray-500 dark:text-gray-400">
-                  <span>Partisipasi: {{ $item['tingkat_partisipasi'] ?? 0 }}%</span>
-                </div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">
+              <span>Partisipasi: {{ $item['tingkat_partisipasi'] }}%</span>
+            </div>
 
-                <div class="h-2 w-full rounded-full bg-purple-50 dark:bg-purple-950">
-                  <div class="h-2 rounded-full bg-purple-600" style="width: {{ $item['tingkat_partisipasi'] ?? 0 }}%">
-                  </div>
-                </div>
-              </div>
-            @empty
-              <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada data ekstrakurikuler.</p>
-            @endforelse
-          </div>
+            <div class="h-2 w-full rounded-full bg-purple-50 dark:bg-purple-950">
+              <div class="h-2 rounded-full bg-purple-600" style="width: {{ $item['tingkat_partisipasi'] }}%"></div>
+            </div>
+          @empty
+            <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada data ekstrakurikuler.</p>
+          @endforelse
         </div>
       </div>
 
@@ -155,27 +152,27 @@
       </div>
     </div>
 
- 
+
     <!-- Catatan Guru & Pembina -->
     <div x-data="{ tab: 'guru' }" class="mt-6">
 
       <!-- Toggle -->
-      <div class="flex items-center gap-3 mb-5">
-        <button 
-          @click="tab = 'guru'"
-          :class="tab === 'guru' 
-            ? 'bg-purple-900 text-white' 
-            : 'bg-purple-600 hover:bg-purple-800 text-white'"
-          class="px-4 py-2 rounded-lg font-medium transition-all duration-200">
+      <div class="mb-5 flex items-center gap-3">
+        <button @click="tab = 'guru'"
+          :class="tab === 'guru'
+              ?
+              'bg-purple-900 text-white' :
+              'bg-purple-600 hover:bg-purple-800 text-white'"
+          class="rounded-lg px-4 py-2 font-medium transition-all duration-200">
           Catatan Guru
         </button>
 
-        <button 
-          @click="tab = 'pembina'"
-          :class="tab === 'pembina' 
-            ? 'bg-purple-900 text-white' 
-            : 'bg-purple-600 hover:bg-purple-800 text-white'"
-          class="px-4 py-2 rounded-lg font-medium transition-all duration-200">
+        <button @click="tab = 'pembina'"
+          :class="tab === 'pembina'
+              ?
+              'bg-purple-900 text-white' :
+              'bg-purple-600 hover:bg-purple-800 text-white'"
+          class="rounded-lg px-4 py-2 font-medium transition-all duration-200">
           Catatan Pembina Ekstrakurikuler
         </button>
       </div>
@@ -192,11 +189,13 @@
           </div>
 
           @foreach ($catatanUTS as $uts)
-            <div class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
+            <div
+              class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
 
               <!-- Foto Guru -->
               <div class="flex-shrink-0">
-                <div class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
+                <div
+                  class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
                   {{ strtoupper(substr($uts['guru_nama'], 0, 2)) }}
                 </div>
               </div>
@@ -261,11 +260,13 @@
           </div>
 
           @foreach ($catatanPembina as $catatan)
-            <div class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
+            <div
+              class="mb-4 flex flex-wrap items-start gap-4 border-b border-gray-200 pb-4 pt-7 md:flex-nowrap dark:border-gray-700">
 
               <!-- Foto Pembina -->
               <div class="flex-shrink-0">
-                <div class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
+                <div
+                  class="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-lg font-medium text-gray-400 shadow-inner dark:bg-gray-700 dark:text-gray-300">
                   {{ strtoupper(substr($catatan['pembina_nama'], 0, 2)) }}
                 </div>
               </div>
@@ -276,7 +277,7 @@
                   {{ $catatan['pembina_nama'] }}
                 </div>
                 <div class="text-sm text-gray-500 md:text-base dark:text-gray-400">
-                  {{ $catatan['pembina_ekskul'] }}
+                  Pembina {{ $catatan['pembina_ekskul'] }}
                 </div>
               </div>
 
@@ -313,7 +314,7 @@
       </template>
     </div>
   </div>
-</div>
+  </div>
 
   <script>
     const isDark = document.documentElement.classList.contains('dark');

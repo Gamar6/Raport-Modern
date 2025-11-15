@@ -25,7 +25,7 @@
                         Platform modern untuk guru, pembina ekstrakurikuler, dan orang tua dalam memantau performa serta mengidentifikasi potensi unik setiap siswa.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <a href="#"
+                        <a href="/login"
                            class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-semibold shadow-md hover:bg-indigo-700 transition">
                            Mulai Sekarang
                         </a>

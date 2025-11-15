@@ -52,13 +52,14 @@ Route::post('/guru/uas/store', [GuruController::class, 'storeUAS'])->name('guru.
 
 Route::get('/pages/siswa', [SiswaController::class, 'index'])->name('pages.siswa');
         
-Route::get('/pages/pembina', function () {
-    if (Auth::check() && Auth::user()->role === 'pembina') {
-        return view('pages.pembina');
-    }
-    abort(403, 'Akses ditolak.');
-})->name('pages.pembina');
-
+Route::get('/pages/pembina', [PembinaController::class, 'index'])
+    ->name('pages.pembina');
+//input siswa_ekskul
+Route::post('/pembina/penilaian', [PembinaController::class, 'storePenilaian'])
+     ->name('pembina.nilai.store');
+//Input potensi siswa
+Route::post('/pembina/catatan/store', [PembinaController::class, 'storeCatatan'])
+    ->name('pembina.catatan.store');
 
 Route::get('/tes-data', function () {
     // Ambil semua data relasi sederhana

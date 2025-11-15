@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SiswaEkskul;
 
 use function PHPSTORM_META\map;
 
@@ -57,15 +58,19 @@ class SiswaController extends Controller
         $chartLabels = $potensiData->pluck('potensi');
         $chartData = $potensiData->pluck('nilai');
 
-        // 🔹 Ambil data ekstrakurikuler siswa (dari pivot siswa_ekskul)
-        $ekskuls = $siswa->ekskuls->map(function($ekskul) {
-            return [
-                'nama' => $ekskul->namaEkskul,
-                'tingkat_keterampilan' => $ekskul->pivot->tingkat_keterampilan,
-                'tingkat_partisipasi' => $ekskul->pivot->tingkat_partisipasi,
-            ];
-        });
+$ekskuls = $siswa->SiswaEkskul()
+    ->with(['ekskul', 'penilaian'])
+    ->get()
+    ->map(function ($item) {
 
+        $penilaian = $item->penilaian->sortByDesc('id')->first();
+
+        return [
+            'nama' => $item->ekskul->nama ?? 'Tidak diketahui',
+            'tingkat_keterampilan' => $penilaian->tingkat_keterampilan ?? '-',
+            'tingkat_partisipasi'  => $penilaian->tingkat_partisipasi ?? 0,
+        ];
+    });
         $catatanPembina = $siswa->catatanPembina->map(function ($catatan) {
             $pembina = $catatan->pembina;
             $userPembina = $pembina?->user;

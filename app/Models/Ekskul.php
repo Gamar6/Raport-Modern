@@ -10,23 +10,27 @@ class Ekskul extends Model
     protected $fillable = ['nama', 'pembina_id', 'anggota_id'];
 
     // Relasi ke Pembina
-    public function pembina()
-    {
-        return $this->belongsTo(Pembina::class, 'pembina_id');
-    }
+public function siswa()
+{
+    return $this->belongsToMany(Siswa::class, 'siswa_ekskul');
+}
 
-    //Relasi ke ekskul
-    public function ekskul()
-    {
-        return $this->belongsTo(Ekskul::class, 'ekskul_id');
-    }
+public function anggota()
+{
+    return $this->hasMany(SiswaEkskul::class);
+}
+
+public function penilaian()
+{
+    return $this->hasMany(PenilaianEkskul::class, 'siswa_ekskul_id');
+}
+
+public function pembina()
+{
+    return $this->belongsTo(Pembina::class, 'pembina_id');
+}
+
+
     
-    public function siswa()
-    {
-        return $this->belongsToMany(Siswa::class, 'siswa_ekskul')
-                    ->withPivot('tingkat_keterampilan', 'tingkat_partisipasi')
-                    ->withTimestamps();
-    }
-
 
 }
