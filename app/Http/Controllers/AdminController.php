@@ -10,12 +10,69 @@ use App\Models\Ekskul;
 use App\Models\Uts;
 use App\Models\Uas;
 use App\Models\CatatanPembina;
+use App\Models\SiswaEkskul;
 use Carbon\Carbon;
+use Illuminate\Http\Request; // ✔ BENAR
+
 
 class AdminController extends Controller
 {
+
+    public function users()
+    {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses khusus Admin.');
+        }
+
+        $users = \App\Models\User::all(); // ambil data user
+        return view('admin.users', compact('users'));
+    }
+
+    public function mapel()
+    {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses khusus Admin.');
+        }
+
+        $mapels = Mapel::all();
+        return view('admin.mapel', compact('mapels'));
+    }
+
+    public function ekskul()
+    {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses khusus Admin.');
+        }
+
+        $ekskuls = Ekskul::all();
+        return view('admin.ekskul', compact('ekskuls'));
+    }
+
+    public function laporan()
+    {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses khusus Admin.');
+        }
+
+        // Ambil data statistik / laporan
+        $siswaCount = Siswa::count();
+        $guruCount = Guru::count();
+
+        return view('admin.laporan', compact('siswaCount', 'guruCount'));
+    }
+
     public function index()
     {
+
+        // 🔹 Cek apakah user login dan role = admin
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses khusus Admin.');
+        }
+
         // ----------------------------
         // 1. Ringkasan Data
         // ----------------------------
@@ -103,7 +160,7 @@ class AdminController extends Controller
 
             if (!is_null($avgUtsMonth) && !is_null($avgUasMonth)) {
                 $avgMonth = ($avgUtsMonth + $avgUasMonth) / 2;
-            } elseif (!is_null($avgUtsMonth)) {
+            } elseif (!is_null($avgUtsMonth)) {                 
                 $avgMonth = $avgUtsMonth;
             } elseif (!is_null($avgUasMonth)) {
                 $avgMonth = $avgUasMonth;
@@ -118,6 +175,19 @@ class AdminController extends Controller
         // 5. Rata-rata keseluruhan siswa (opsional)
         // ----------------------------
         $rata_rata_semua_siswa = Siswa::avg('rataNilai') ?? 0;
+        
+        // ----------------------------
+        // Rata-rata Partisipasi per Ekskul
+        // ----------------------------
+        $daftar_ekskul = Ekskul::all();
+
+        $rata_partisipasi_per_ekskul = [];
+
+        foreach ($daftar_ekskul as $ekskul) {
+            $avg = SiswaEkskul::where('ekskul_id', $ekskul->id)->avg('tingkat_partisipasi');
+
+            $rata_partisipasi_per_ekskul[$ekskul->nama] = round($avg ?? 0, 2);
+        }
 
         // ----------------------------
         // Kirim ke view (variabel sesuai blade)
@@ -142,7 +212,129 @@ class AdminController extends Controller
             'progress_uts' => $progress_uts,
             'progress_uas' => $progress_uas,
             'progress_ekskul' => $persentase_pembina,
+            'rata_partisipasi_per_ekskul' => $rata_partisipasi_per_ekskul,
         ]);
+    }
+
+    public function createUser()
+    {
+        return view('admin.create-user');
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+            'role' => 'required|in:guru,pembina,siswa',
+        ]);
+
+        // 🔹 Simpan ke tabel users
+        $user = \App\Models\User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+        ]);
+
+        // 🔹 Masukkan ke tabel lain berdasarkan role
+        if ($request->role === 'guru') {
+            Guru::create([
+                'user_id' => $user->id,
+                'namaGuru' => $request->namaGuru,
+                'mapel' => $request->mapel,
+                'nip' => $request->nip,
+            ]);
+        }
+
+        if ($request->role === 'pembina') {
+            Pembina::create([
+                'user_id' => $user->id,
+                'nama' => $request->namaPembina,
+            ]);
+        }
+
+        if ($request->role === 'siswa') {
+            Siswa::create([
+                'user_id' => $user->id,
+                'kelas_id' => $request->kelas_id,
+                'namaSiswa' => $request->namaSiswa,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'nis' => $request->nis,
+            ]);
+        }
+
+        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function editUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        return view('admin.users-edit', compact('user'));
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        $request->validate([
+            'username' => 'required|unique:users,username,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+        ]);
+
+        $user->update([
+            'username' => $request->username,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        // Update data tabel role tertentu
+        if ($user->role === 'guru') {
+            $user->guru->update([
+                'namaGuru' => $user->username, // otomatis ambil username
+                'mapel' => $request->mapel,
+                'nip' => $request->nip,
+            ]);
+        }
+
+        if ($user->role === 'pembina') {
+            $user->pembina->update([
+                'nama' => $request->namaPembina,
+            ]);
+        }
+
+        if ($user->role === 'siswa') {
+            $user->siswa->update([
+                'kelas_id' => $request->kelas_id,
+                'namaSiswa' => $request->namaSiswa,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'nis' => $request->nis,
+            ]);
+        }
+
+        return redirect()->route('admin.users')->with('success', 'User berhasil diperbarui.');
+    }
+
+    public function deleteUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        // Hapus data tabel lain juga
+        if ($user->role === 'guru') {
+            $user->guru()->delete();
+        }
+        if ($user->role === 'pembina') {
+            $user->pembina()->delete();
+        }
+        if ($user->role === 'siswa') {
+            $user->siswa()->delete();
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'User berhasil dihapus.');
     }
 
 

@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Guru extends Model
 {
     protected $table = 'guru';
-    protected $fillable = ['user_id', 'nip'];
+    protected $fillable = [
+        'user_id',
+        'namaGuru',
+        'mapel',
+        'nip',
+    ];
 
     // Relasi ke User
     public function user()
@@ -20,4 +25,21 @@ class Guru extends Model
     {
         return $this->hasMany(Kelas::class, 'waliKelas_id');
     }
+
+    public function guruKelas()
+    {
+        return $this->hasMany(GuruKelas::class);
+    }
+
+    // Jika ingin langsung mengambil daftar kelas
+    public function kelasDiampu()
+    {
+        return $this->belongsToMany(Kelas::class, 'guru_kelas');
+    }
+
+    public function kelasDiajarkan()
+    {
+        return $this->belongsToMany(Kelas::class, 'guru_kelas', 'guru_id', 'kelas_id');
+    }
+
 }

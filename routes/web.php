@@ -8,6 +8,9 @@ use App\Http\Controllers\PembinaController;
 use App\Http\Controllers\SiswaController;
 use App\Models\Siswa;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GuruController;
+use Illuminate\Http\Request; // ✔ BENAR
+
 
 
 Route::get('/', function () {
@@ -19,15 +22,33 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Halaman masing-masing role
+
+//Halaman Admin
 Route::get('/admin/admin', [AdminController::class, 'index'])
     ->name('admin.admin');
 
-Route::get('/pages/guru', function () {
-    if (Auth::check() && Auth::user()->role === 'guru') {
-        return view('pages.guru');
-    }
-    abort(403, 'Akses ditolak.');
-})->name('pages.guru');
+// Manajemen Pengguna Admin
+Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+
+Route::get('/admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
+Route::post('/admin/users/store', [AdminController::class, 'storeUser'])->name('admin.users.store');
+
+Route::get('/admin/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+Route::put('/admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
+
+Route::delete('/admin/users/{id}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+
+Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+Route::get('/admin/mapel', [AdminController::class, 'mapel'])->name('admin.mapel');
+Route::get('/admin/ekskul', [AdminController::class, 'ekskul'])->name('admin.ekskul');
+Route::get('/admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
+
+//Route Halaman Guru
+Route::get('/pages/guru', [GuruController::class, 'index'])->name('pages.guru');
+// Route untuk form input nilai UTS
+Route::post('/guru/uts/store', [GuruController::class, 'storeUTS'])->name('guru.uts.store');
+Route::post('/guru/uas/store', [GuruController::class, 'storeUAS'])->name('guru.uas.store');
+
 
 Route::get('/pages/siswa', [SiswaController::class, 'index'])->name('pages.siswa');
         

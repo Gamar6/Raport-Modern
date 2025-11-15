@@ -1,0 +1,28 @@
+public function index()
+{
+    if (!Auth::check() || Auth::user()->role !== 'guru') {
+        return redirect()->route('login')->with('error', 'Akses khusus Guru.');
+    }
+
+    $guru = Auth::user()->guru;
+
+    // Mata pelajaran yang diajarkan
+    $mapel = $guru->mapel;
+
+    // Semua kelas yang diajar guru (many-to-many)
+    $kelasList = $guru->kelasDiajarkan; 
+
+    $totalKelas = $kelasList->count();
+
+    $nama = $guru->user->username;
+
+    // Total siswa dari semua kelas yang diajar
+    $totalSiswa = $kelasList->sum(function ($kelas) {
+        return $kelas->siswas->count();
+    });
+
+    // Mengambil kelas pertama jika ada (opsional)
+    $kelasId = $kelasList->first() ? $kelasList->first()->id : null;
+
+    return view('pages.guru', compact('mapel', 'totalKelas', 'totalSiswa', 'kelasList', 'nama', 'kelasId'));
+}

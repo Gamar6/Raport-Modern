@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Uts extends Model
 {
     protected $table = 'uts';
-    protected $fillable = ['siswa_id', 'nilai', 'catatan'];
+    protected $fillable = ['siswa_id', 'namaSiswa', 'mapel', 'nilai', 'guru_id', 'catatan'];
 
     // Relasi ke Siswa
     public function siswa()
@@ -17,7 +17,7 @@ class Uts extends Model
 
     public function guru()
     {
-        return $this->belongsTo(\App\Models\Guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 
 }

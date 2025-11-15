@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Uas extends Model
 {
     protected $table = 'uas';
-    protected $fillable = ['siswa_id', 'nilai', 'mapel', 'catatan'];
+    protected $fillable = ['siswa_id', 'namaSiswa', 'mapel', 'nilai', 'guru_id', 'catatan'];
 
     // Relasi ke Siswa
     public function siswa()
@@ -17,7 +17,7 @@ class Uas extends Model
 
     public function guru()
     {
-        return $this->belongsTo(\App\Models\Guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 
 }

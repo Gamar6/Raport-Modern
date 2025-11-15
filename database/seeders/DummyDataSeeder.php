@@ -66,7 +66,8 @@ class DummyDataSeeder extends Seeder
         $kelasList = ['2A', '2B', '2C'];
         $kelasIds = [];
         foreach ($kelasList as $namaKelas) {
-            $waliKelasId = $guruIds['Matematika']; // contoh wali kelas
+            // Assign wali kelas yang berbeda untuk setiap kelas
+            $waliKelasId = Arr::random($guruIds); // Pilih wali kelas secara acak dari guru yang ada
             $kelasIds[$namaKelas] = DB::table('kelas')->insertGetId([
                 'namaKelas' => $namaKelas,
                 'waliKelas_id' => $waliKelasId,
@@ -117,7 +118,7 @@ class DummyDataSeeder extends Seeder
                         'siswa_id' => $siswaId,
                         'namaSiswa' => $namaSiswa,
                         'mapel' => $mapel,
-                        'nilai' => rand(75, 95),
+                        'nilai' => rand(10, 95),
                         'guru_id' => $guruIds[$mapel],
                         'catatan' => "Nilai UAS {$namaSiswa}",
                     ]);
@@ -184,5 +185,23 @@ class DummyDataSeeder extends Seeder
                 ]);
             }
         }
+        // ===== GURU MENGAJAR KELAS =====
+        $kelasIdsArray = array_values($kelasIds); // ambil ID kelas sebagai array
+        foreach ($guruIds as $mapel => $guruId) {
+            // Pilih 1-2 kelas acak yang diajar setiap guru
+            $kelasDiajar = Arr::random($kelasIdsArray, rand(3, 3));
+            if (!is_array($kelasDiajar)) {
+                $kelasDiajar = [$kelasDiajar];
+            }
+
+            foreach ($kelasDiajar as $kelasId) {
+                DB::table('guru_kelas')->insert([
+                    'guru_id' => $guruId,
+                    'kelas_id' => $kelasId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }        
     }
 }

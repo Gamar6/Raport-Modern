@@ -22,4 +22,21 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
+
+    // Relasi berdasarkan role
+        public function guru()
+    {
+        return $this->hasOne(Guru::class);
+    }
+
+    public function siswa()
+    {
+        return $this->hasOne(Siswa::class);
+    }
+
+    public function pembina()
+    {
+        return $this->hasOne(Pembina::class);
+    }
+
 }

@@ -30,11 +30,11 @@
         </div>
         <div class="grid grid-cols-2 gap-4 text-center">
           <div class="rounded-lg bg-purple-50 p-3 dark:bg-purple-900">
-            <p class="text-3xl font-bold text-purple-700 dark:text-purple-300">{{ $rataRataUAS }}</p>
+            <p class="text-3xl font-bold text-purple-700 dark:text-white">{{ $rataRataUAS }}</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Rata-rata UAS</p>
           </div>
           <div class="rounded-lg bg-purple-50 p-3 dark:bg-purple-900">
-            <p class="text-3xl font-bold text-green-700 dark:text-green-400">4</p>
+            <p class="text-3xl font-bold text-green-700 dark:text-green-400">6</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Bidang Potensi</p>
           </div>
         </div>
@@ -44,7 +44,7 @@
     <!-- Potensi & Minat -->
     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
       <h3 class="mb-2 text-xl font-semibold text-gray-800 dark:text-white">Potensi & Minat</h3>
-      <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Badge menunjukkan 5 mata pelajaran dengan nilai tertinggi
+      <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Badge menunjukkan 3 mata pelajaran dengan nilai tertinggi
         UAS</p>
       @foreach ($topPotensi as $potensiItem)
         @foreach ($potensiItem['potensi'] as $item)
