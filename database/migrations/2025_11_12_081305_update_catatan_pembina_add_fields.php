@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::table('catatan_pembina', function (Blueprint $table) {
-            $table->string('tingkat_partisipasi')->nullable()->after('namaAnggota');
-            $table->string('tingkat_keterampilan')->after('tingkat_partisipasi');
-            $table->text('potensi')->nullable()->after('catatan');
+             $table->text('potensi')->nullable()->after('catatan');
             $table->text('rekomendasi_pengembangan')->nullable()->after('potensi');
         });
     }

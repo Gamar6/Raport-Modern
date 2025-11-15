@@ -24,4 +24,3 @@ class Pembina extends Model
         return $this->hasMany(CatatanPembina::class, 'pembina_id');
     }
 }
-

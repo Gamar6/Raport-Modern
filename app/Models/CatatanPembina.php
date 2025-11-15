@@ -12,11 +12,9 @@ class CatatanPembina extends Model
         'pembina_id',
         'namaAnggota',
         'catatan',
-        'tingkat_partisipasi',
-        'tingkat_keterampilan',
         'potensi',
-        'rekomendasi_pengembangan'
-    ];
+        'rekomendasi_pengembangan',
+     ];
 
     public function siswa()
     {

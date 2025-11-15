@@ -10,12 +10,10 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('siswa_id');
             $table->unsignedBigInteger('ekskul_id');
-            $table->string('tingkat_keterampilan')->nullable();
-            $table->integer('tingkat_partisipasi')->nullable(); // nilai 0–100
             $table->timestamps();
-
             $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('cascade');
             $table->foreign('ekskul_id')->references('id')->on('ekskul')->onDelete('cascade');
+            $table->unique(['siswa_id', 'ekskul_id']);
         });
     }
 
