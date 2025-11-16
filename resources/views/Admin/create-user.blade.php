@@ -1,14 +1,22 @@
 @extends('Admin.admin-layout')
-
 @section('title', 'Dashboard Admin')
-
 @section('content')
 
-<div class="max-w-xl mx-auto p-6">
+<div class="container mx-auto px-4 py-6">
 
-    <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+    <!-- header content -->
+    <div class="mb-8 flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white"">
         Tambah Pengguna Baru
-    </h1>
+      </h1>
+
+      <a href="{{ route('admin.users') }}"
+          class="rounded-xl bg-blue-600 px-4 py-2 text-white font-semibold 
+                 shadow-md hover:bg-blue-700 transition-all duration-200 
+                 dark:bg-blue-700 dark:hover:bg-blue-800">
+          Kembali ke Daftar Pengguna
+      </a>
+    </div>
 
     <form action="{{ route('admin.users.store') }}" method="POST"
           class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 space-y-5">

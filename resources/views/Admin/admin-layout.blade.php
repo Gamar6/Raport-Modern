@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      class="scroll-smooth" 
+      class="scroll-smooth transition-all duration-300 ease-in-out"
       x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
       :data-theme="darkMode ? 'dark' : 'light'"
       x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))">
@@ -16,7 +16,7 @@
 </head>
 
 <body 
-    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex min-h-screen"
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex min-h-screen transition-all duration-300 ease-in-out"
     x-data="sidebarController()"
     x-init="init()"
 >
@@ -33,10 +33,10 @@
     <aside 
         class="fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out"
         :class="{
-            '-translate-x-full': !sidebarOpen && window.innerWidth < 1024,
+            '-translate-x-full': !sidebarOpen && window.innerWidth < 1005,
             'translate-x-0': sidebarOpen || window.innerWidth >= 1024,
             'w-20': sidebarCollapsed && window.innerWidth >= 1024,
-            'w-64': !sidebarCollapsed && window.innerWidth >= 1024
+            'w-68': !sidebarCollapsed && window.innerWidth >= 1024
         }"
     >
         <div class="flex flex-col h-full overflow-hidden justify-between">
@@ -144,12 +144,11 @@
     </aside>
 
     <!-- Konten Utama -->
-    <div class="flex flex-col flex-1 transition-all duration-300 bg-[#f8f5ff] dark:bg-gray-900"
-         :class="sidebarCollapsed && window.innerWidth >= 1024 ? 'lg:ml-20' : 'lg:ml-64'">
+    <div class="flex flex-col flex-1 transition-all duration-300 ease-in-out bg-[#f8f5ff] dark:bg-gray-900"
+      :class="sidebarCollapsed && window.innerWidth >= 1024 ? 'lg:ml-20' : 'lg:ml-67'">
 
         <!-- Header -->
-        <header class="sticky top-0 z-20 flex items-center justify-between h-16 px-4 pe-8 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-
+        <header class="sticky top-0 z-20 flex items-center justify-between h-16 px-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out">
             <div class="flex items-center gap-2">
                 <!-- Tombol hamburger untuk mobile -->
                 <button 
@@ -190,7 +189,7 @@
         </header>
 
         <!-- Konten -->
-        <main>
+        <main class="flex flex-col flex-1 transition-all duration-300 ease-in-out bg-[#f8f5ff] dark:bg-gray-900">
             @yield('content')
         </main>
     </div>

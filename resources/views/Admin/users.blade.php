@@ -1,79 +1,106 @@
 @extends('Admin.admin-layout')
-
 @section('title', 'Dashboard Admin')
-
 @section('content')
 
-  <div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6">
 
-    <div class="mb-6 flex items-center justify-between">
-      <h1 class="text-2xl font-bold">Manajemen Pengguna</h1>
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            Manajemen Pengguna
+        </h1>
 
-      <a href="{{ route('admin.users.create') }}" class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-        + Tambah Pengguna
-      </a>
+        <a href="{{ route('admin.users.create') }}"
+            class="rounded-xl bg-blue-600 px-4 py-2 text-white font-semibold 
+                   shadow-md hover:bg-blue-700 transition-all duration-200 
+                   dark:bg-blue-700 dark:hover:bg-blue-800">
+            + Tambah Pengguna
+        </a>
     </div>
 
+    <!-- Success Alert -->
     @if (session('success'))
-      <div class="mb-4 rounded bg-green-100 p-3 text-green-700">
-        {{ session('success') }}
-      </div>
+        <div class="mb-6 rounded-xl bg-green-100 dark:bg-green-800 p-4 text-green-700 dark:text-green-200 
+                    border border-green-200 dark:border-green-700 shadow-sm">
+            {{ session('success') }}
+        </div>
     @endif
 
-    <div class="overflow-hidden rounded-lg bg-white shadow">
-      <table class="min-w-full border-collapse">
-        <thead class="border-b bg-gray-100">
-          <tr>
-            <th class="px-4 py-3 text-left font-semibold text-gray-700">#</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-700">Username</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-700">Role</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-700">Aksi</th>
-          </tr>
-        </thead>
+    <!-- Table Wrapper -->
+    <div class="overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md 
+                border border-gray-200 dark:border-gray-700">
 
-        <tbody>
-          @forelse ($users as $index => $user)
-            <tr class="border-b">
-              <td class="px-4 py-3">{{ $index + 1 }}</td>
-              <td class="px-4 py-3 capitalize">{{ $user->username }}</td>
-              <td class="px-4 py-3">{{ $user->email }}</td>
-              <td class="px-4 py-3">
-                <span class="rounded bg-gray-200 px-2 py-1 capitalize text-gray-700">
-                  {{ $user->role }}
-                </span>
-              </td>
-              <td class="flex gap-2 px-4 py-3">
+        <table class="min-w-full border-collapse">
 
-                <!-- Edit -->
-                <a href="{{ route('admin.users.edit', $user->id) }}"
-                  class="rounded bg-yellow-500 px-3 py-1 text-white hover:bg-yellow-600">
-                  Edit
-                </a>
+            <!-- Table Head -->
+            <thead class="bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
+                <tr>
+                    <th class="px-5 py-3 text-left font-semibold text-gray-800 dark:text-gray-200">#</th>
+                    <th class="px-5 py-3 text-left font-semibold text-gray-800 dark:text-gray-200">Username</th>
+                    <th class="px-5 py-3 text-left font-semibold text-gray-800 dark:text-gray-200">Email</th>
+                    <th class="px-5 py-3 text-left font-semibold text-gray-800 dark:text-gray-200">Role</th>
+                    <th class="px-5 py-3 text-left font-semibold text-gray-800 dark:text-gray-200">Aksi</th>
+                </tr>
+            </thead>
 
-                <!-- Delete -->
-                <form action="{{ route('admin.users.delete', $user->id) }}" method="POST"
-                  onsubmit="return confirm('Yakin ingin menghapus user ini?');">
-                  @csrf
-                  @method('DELETE')
+            <!-- Table Body -->
+            <tbody>
+                @forelse ($users as $index => $user)
+                    <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
 
-                  <button class="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">
-                    Hapus
-                  </button>
-                </form>
+                        <td class="px-5 py-4 text-gray-900 dark:text-gray-100">{{ $index + 1 }}</td>
 
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="5" class="px-4 py-3 text-center text-gray-500">
-                Belum ada pengguna terdaftar.
-              </td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+                        <td class="px-5 py-4 capitalize text-gray-900 dark:text-gray-100">
+                            {{ $user->username }}
+                        </td>
+
+                        <td class="px-5 py-4 text-gray-900 dark:text-gray-100">
+                            {{ $user->email }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-medium capitalize
+                                         bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100">
+                                {{ $user->role }}
+                            </span>
+                        </td>
+
+                        <!-- Aksi -->
+                        <td class="px-5 py-4 flex gap-3">
+
+                            <!-- Edit -->
+                            <a href="{{ route('admin.users.edit', $user->id) }}"
+                                class="rounded-lg bg-yellow-500 px-4 py-2 text-white text-sm font-medium 
+                                       hover:bg-yellow-600 transition shadow">
+                                Edit
+                            </a>
+
+                            <!-- Delete -->
+                            <form action="{{ route('admin.users.delete', $user->id) }}" method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus user ini?');">
+                                @csrf
+                                @method('DELETE')
+
+                                <button
+                                    class="rounded-lg bg-red-600 px-4 py-2 text-white text-sm font-medium 
+                                           hover:bg-red-700 transition shadow">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-5 py-6 text-center text-gray-500 dark:text-gray-300">
+                            Belum ada pengguna terdaftar.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
     </div>
-  </div>
+
+</div>
 
 @endsection

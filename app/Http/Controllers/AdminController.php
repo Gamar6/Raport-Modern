@@ -11,6 +11,7 @@ use App\Models\Uts;
 use App\Models\Uas;
 use App\Models\CatatanPembina;
 use App\Models\SiswaEkskul;
+use App\Models\PenilaianEkskul;
 use Carbon\Carbon;
 use Illuminate\Http\Request; // ✔ BENAR
 
@@ -179,12 +180,12 @@ class AdminController extends Controller
         // ----------------------------
         // Rata-rata Partisipasi per Ekskul
         // ----------------------------
-        $daftar_ekskul = Ekskul::all();
+        $daftar_ekskul = PenilaianEkskul::all();
 
         $rata_partisipasi_per_ekskul = [];
 
         foreach ($daftar_ekskul as $ekskul) {
-            $avg = SiswaEkskul::where('ekskul_id', $ekskul->id)->avg('tingkat_partisipasi');
+            $avg = PenilaianEkskul::where('siswa_ekskul_id', $ekskul->id)->avg('tingkat_partisipasi');
 
             $rata_partisipasi_per_ekskul[$ekskul->nama] = round($avg ?? 0, 2);
         }
