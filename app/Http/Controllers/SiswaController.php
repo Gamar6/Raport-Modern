@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SiswaEkskul;
+use App\Models\PenilaianEkskul;
 
 use function PHPSTORM_META\map;
 
@@ -58,32 +59,54 @@ class SiswaController extends Controller
         $chartLabels = $potensiData->pluck('potensi');
         $chartData = $potensiData->pluck('nilai');
 
-$ekskuls = $siswa->SiswaEkskul()
-    ->with(['ekskul', 'penilaian'])
-    ->get()
-    ->map(function ($item) {
+        $ekskuls = $siswa->SiswaEkskul()
+            ->with(['ekskul', 'penilaian'])
+            ->get()
+            ->map(function ($item) {
 
-        $penilaian = $item->penilaian->sortByDesc('id')->first();
+                $penilaian = $item->penilaian->sortByDesc('id')->first();
+
+                return [
+                    'nama' => $item->ekskul->nama ?? 'Tidak diketahui',
+                    'tingkat_keterampilan' => $penilaian->tingkat_keterampilan ?? '-',
+                    'tingkat_partisipasi'  => $penilaian->tingkat_partisipasi ?? 0,
+                ];
+            });
+
+        // $catatanPembina = $siswa->catatanPembina->map(function ($catatan) {
+        //     $pembina = $catatan->pembina;
+        //     $userPembina = $pembina?->user;
+        //     $ekskul = $pembina?->ekskul;
+
+        //     return [
+        //         'catatan' => $catatan->catatan ?? '-',
+        //         'alasan' => $catatan->potensi ?? '-',
+        //         'pengembangan' => $catatan->rekomendasi_pengembangan ?? '-',
+        //         'pembina_nama' => $userPembina->name ?? $pembina->nama ?? 'Tidak diketahui',
+        //         'pembina_ekskul' => $ekskul->nama ?? 'Tidak diketahui',
+        //     ];
+        // });
+
+        $catatanPembina = $siswa->catatanPembina->map(function ($catatan) {
+        $pembina = $catatan->pembina;
+        $userPembina = $pembina?->user;
+        $ekskul = $pembina?->ekskul;
+
+        // ambil catatan dari penilaian_ekskul
+        $penilaian = PenilaianEkskul::whereHas('anggota', function ($q) use ($ekskul, $catatan) {
+            $q->where('siswa_id', $catatan->siswa_id)
+            ->where('ekskul_id', $ekskul->id); // di sini benar, karena siswa_ekskul ada kolom ekskul_id
+        })->first();
 
         return [
-            'nama' => $item->ekskul->nama ?? 'Tidak diketahui',
-            'tingkat_keterampilan' => $penilaian->tingkat_keterampilan ?? '-',
-            'tingkat_partisipasi'  => $penilaian->tingkat_partisipasi ?? 0,
+            'catatan' => $penilaian->catatan ?? '-',  // ganti ambil dari penilaian
+            'alasan' => $catatan->potensi ?? '-',
+            'pengembangan' => $catatan->rekomendasi_pengembangan ?? '-',
+            'pembina_nama' => $userPembina->name ?? $pembina->nama ?? 'Tidak diketahui',
+            'pembina_ekskul' => $ekskul->nama ?? 'Tidak diketahui',
         ];
     });
-        $catatanPembina = $siswa->catatanPembina->map(function ($catatan) {
-            $pembina = $catatan->pembina;
-            $userPembina = $pembina?->user;
-            $ekskul = $pembina?->ekskul;
 
-            return [
-                'catatan' => $catatan->catatan ?? '-',
-                'alasan' => $catatan->potensi ?? '-',
-                'pengembangan' => $catatan->rekomendasi_pengembangan ?? '-',
-                'pembina_nama' => $userPembina->name ?? $pembina->nama ?? 'Tidak diketahui',
-                'pembina_ekskul' => $ekskul->nama ?? 'Tidak diketahui',
-            ];
-        });
 
         // 🔹 Ambil catatan dari tabel UTS dan UAS milik siswa ini
         $catatanUTS = $siswa->uts()

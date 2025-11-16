@@ -33,22 +33,36 @@ class Siswa extends Model
         return $this->hasMany(Uas::class, 'siswa_id');
     }
     
-public function ekskuls()
-{
-    return $this->belongsToMany(Ekskul::class, 'siswa_ekskul');
-}
+    public function ekskuls()
+    {
+        return $this->belongsToMany(Ekskul::class, 'siswa_ekskul');
+    }
 
     // 🔹 Relasi ke Catatan Pembina (bisa banyak)
     public function catatanPembina()
     {
         return $this->hasMany(CatatanPembina::class);
     }
-public function siswaEkskul()
-{
-    return $this->hasMany(SiswaEkskul::class, 'siswa_id');
-}
+
+    public function siswaEkskul()
+    {
+        return $this->hasMany(SiswaEkskul::class, 'siswa_id');
+    }
+    
+    public function penilaianEkskul()
+    {
+        return $this->hasManyThrough(
+            PenilaianEkskul::class,
+            SiswaEkskul::class,
+            'siswa_id',
+            'siswa_ekskul_id',
+            'id',
+            'id'
+        );
+    }
 
 }
+
 
 
 

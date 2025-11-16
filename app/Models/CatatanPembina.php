@@ -25,4 +25,17 @@ class CatatanPembina extends Model
     {
         return $this->belongsTo(Pembina::class, 'pembina_id');
     }
+
+    public function penilaian()
+    {
+        return $this->hasOneThrough(
+            PenilaianEkskul::class,  // model tujuan
+            SiswaEkskul::class,      // model perantara
+            'siswa_id',              // foreign key di SiswaEkskul
+            'siswa_ekskul_id',       // foreign key di PenilaianEkskul
+            'siswa_id',              // local key di CatatanPembina
+            'id'                     // local key di SiswaEkskul
+        )->where('ekskul_id', $this->pembina?->ekskul_id ?? 0);
+    }
+
 }

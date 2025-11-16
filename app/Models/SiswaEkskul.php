@@ -33,6 +33,11 @@ class SiswaEkskul extends Model
     {
         return $this->belongsTo(Ekskul::class, 'ekskul_id');
     }
+    // Tambahkan ini:
+    public function penilaianEkskul()
+    {
+        return $this->hasOne(PenilaianEkskul::class, 'siswa_ekskul_id');
+    }
 
  
 

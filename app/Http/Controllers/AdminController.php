@@ -21,7 +21,7 @@ class AdminController extends Controller
 
     public function users()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user || $user->role !== 'admin') {
             return redirect()->route('login')->with('error', 'Akses khusus Admin.');
         }
@@ -32,7 +32,7 @@ class AdminController extends Controller
 
     public function mapel()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user || $user->role !== 'admin') {
             return redirect()->route('login')->with('error', 'Akses khusus Admin.');
         }
@@ -43,7 +43,7 @@ class AdminController extends Controller
 
     public function ekskul()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user || $user->role !== 'admin') {
             return redirect()->route('login')->with('error', 'Akses khusus Admin.');
         }
@@ -54,7 +54,7 @@ class AdminController extends Controller
 
     public function laporan()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user || $user->role !== 'admin') {
             return redirect()->route('login')->with('error', 'Akses khusus Admin.');
         }

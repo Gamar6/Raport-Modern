@@ -13,44 +13,91 @@ class GuruController extends Controller
 {
     public function index()
     {
-        // Pastikan user login dan role adalah guru
         if (!Auth::check() || Auth::user()->role !== 'guru') {
             return redirect()->route('login')->with('error', 'Akses khusus Guru.');
         }
 
-        // Mengambil data guru yang sedang login
         $guru = Auth::user()->guru;
 
-        // Mengambil mata pelajaran yang diajarkan oleh guru
         $mapel = $guru->mapel;
-
-        // Mengambil kelas yang diampu oleh guru (wali kelas)
         $kelasList = $guru->kelasDiampu;
-
-        // Menghitung total kelas
         $totalKelas = $kelasList->count();
-
         $nama = $guru->user->username;
 
-        // Menghitung total siswa yang diajar (di setiap kelas yang diampu guru)
-        $totalSiswa = $kelasList->sum(function ($kelas) {
-            return $kelas->siswas->count();
+        $semuaSiswa = $kelasList->flatMap(fn($kelas) => $kelas->siswas);
+
+        $totalSiswa = $semuaSiswa->count();
+
+        // Gabungkan nilai UTS, UAS, rata-rata, potensi, dan catatan
+        $semuaSiswa = $semuaSiswa->map(function ($siswa) use ($guru) {
+            $uts = Uts::where('siswa_id', $siswa->id)
+                    ->where('guru_id', $guru->id)
+                    ->first();
+            $uas = Uas::where('siswa_id', $siswa->id)
+                    ->where('guru_id', $guru->id)
+                    ->first();
+
+            $nilaiUts = $uts->nilai ?? null;
+            $nilaiUas = $uas->nilai ?? null;
+
+            $siswa->nilai_uts = $nilaiUts;
+            $siswa->nilai_uas = $nilaiUas;
+            $siswa->catatanutsGuru = $uts->catatan ?? $uas->catatan ?? '-';
+            $siswa->catatanuasGuru = $uas->catatan ?? $uas->catatan ?? '-';
+            $siswa->rataRataNilai = $nilaiUts && $nilaiUas ? round(($nilaiUts + $nilaiUas) / 2, 2) : ($nilaiUts ?? $nilaiUas ?? '-');
+
+            if (is_numeric($siswa->rataRataNilai)) {
+                if ($siswa->rataRataNilai >= 85) $siswa->potensi = 'Tinggi';
+                elseif ($siswa->rataRataNilai >= 70) $siswa->potensi = 'Sedang';
+                else $siswa->potensi = 'Perlu Perbaikan';
+            } else $siswa->potensi = '-';
+
+            // $siswa->kelas = $siswa->kelas->nama ?? '-';
+            $siswa->kelas_nama = $siswa->kelas->namaKelas ?? '-';
+
+            $siswa->mapel = $guru->mapel;
+
+            return $siswa;
         });
-                  
-        $semuaSiswa = $kelasList->flatMap(function ($kelas) {
-            return $kelas->siswas; 
-        });
 
+        // Statistik rata-rata nilai per kelas
+        $kelasLabels = $kelasList->pluck('namaKelas')->toArray();
+        $utsRataRata = [];
+        $uasRataRata = [];
 
+        foreach ($kelasList as $kelas) {
+            $siswas = $kelas->siswas;
+            $utsNilai = $siswas->map(function($s) use ($guru) {
+                $uts = Uts::where('siswa_id', $s->id)->where('guru_id', $guru->id)->first();
+                return $uts->nilai ?? null;
+            })->filter()->all();
+            $uasNilai = $siswas->map(function($s) use ($guru) {
+                $uas = Uas::where('siswa_id', $s->id)->where('guru_id', $guru->id)->first();
+                return $uas->nilai ?? null;
+            })->filter()->all();
 
-        // Mengirimkan data ke view
-        return view('pages.guru', compact('mapel', 'totalKelas', 'totalSiswa', 'kelasList', 'nama', 'semuaSiswa'));
+            $utsRataRata[] = count($utsNilai) ? round(array_sum($utsNilai)/count($utsNilai), 2) : 0;
+            $uasRataRata[] = count($uasNilai) ? round(array_sum($uasNilai)/count($uasNilai), 2) : 0;
+        }
+
+    // dd($kelasLabels, $utsRataRata, $uasRataRata);
+
+        return view('pages.guru', compact(
+            'mapel',
+            'totalKelas',
+            'totalSiswa',
+            'kelasList',
+            'nama',
+            'semuaSiswa',
+            'kelasLabels',
+            'utsRataRata',
+            'uasRataRata'
+        ));
     }
+
 
     public function storeUTS(Request $request)
     {
-        $siswa = Siswa::findOrFail($request->siswa_id);
-
         $request->validate([
             'siswa_id' => 'required|exists:siswa,id',
             'nilai'    => 'required|numeric|min:0|max:100',
@@ -58,29 +105,23 @@ class GuruController extends Controller
         ]);
 
         $guru = Auth::user()->guru;
+        $siswa = Siswa::findOrFail($request->siswa_id);
 
-        // Simpan
-        $uts = Uts::create([
-            'siswa_id'   => $request->siswa_id,
-            'namaSiswa'  => $siswa->namaSiswa,
-            'mapel'      => $guru->mapel,
-            'nilai'      => $request->nilai,
-            'guru_id'    => $guru->id,
-            'catatan'    => $request->catatan
-        ]); 
-        // dd(
-        //     "MASUK STORE", $request->all(),
-        //     [
-        //     'guru_id' => $guru->id,
-        //     'mapel' => $guru->mapel
-        // ]);
+        Uts::updateOrCreate(
+            ['siswa_id' => $siswa->id, 'guru_id' => $guru->id],
+            [
+                'namaSiswa' => $siswa->namaSiswa,
+                'mapel'     => $guru->mapel,
+                'nilai'     => $request->nilai,
+                'catatan'   => $request->catatan
+            ]
+        );
+
         return back()->with('success', 'Nilai UTS berhasil disimpan!');
     }
 
     public function storeUAS(Request $request)
     {
-        $siswa = Siswa::findOrFail($request->siswa_id);
-
         $request->validate([
             'siswa_id' => 'required|exists:siswa,id',
             'nilai'    => 'required|numeric|min:0|max:100',
@@ -88,18 +129,18 @@ class GuruController extends Controller
         ]);
 
         $guru = Auth::user()->guru;
+        $siswa = Siswa::findOrFail($request->siswa_id);
 
-        // Simpan
-        $uas = Uas::create([
-            'siswa_id'   => $request->siswa_id,
-            'namaSiswa'  => $siswa->namaSiswa,
-            'mapel'      => $guru->mapel,
-            'nilai'      => $request->nilai,
-            'guru_id'    => $guru->id,
-            'catatan'    => $request->catatan
-        ]); 
-       
-        return back()->with('success', 'Nilai UTS berhasil disimpan!');
+        Uas::updateOrCreate(
+            ['siswa_id' => $siswa->id, 'guru_id' => $guru->id],
+            [
+                'namaSiswa' => $siswa->namaSiswa,
+                'mapel'     => $guru->mapel,
+                'nilai'     => $request->nilai,
+                'catatan'   => $request->catatan
+            ]
+        );
+
+        return back()->with('success', 'Nilai UAS berhasil disimpan!');
     }
-    
 }
