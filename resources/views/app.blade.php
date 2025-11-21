@@ -1,70 +1,83 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="id" 
       class="scroll-smooth"
       x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
       :data-theme="darkMode ? 'dark' : 'light'"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))">
-
-<head>
+      :class="{ 'dark': darkMode }"> 
+      <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
-    <title>Edu Track</title>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <title>@yield('title', 'Edu Track')</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 
-<body 
-    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex min-h-screen"
->
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100">
 
-    <!-- Konten Utama -->
-    <div class="flex flex-col flex-1 bg-[#f8f5ff] dark:bg-gray-900">
-
-        <!-- Header -->
-        <header class="sticky top-0 z-20 flex items-center justify-between h-16 px-4 pe-8 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-
+    <header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md transition-colors dark:border-gray-700 dark:bg-gray-900/80">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            
             <div class="flex items-center gap-2">
-                <!-- Tombol hamburger (tidak berguna lagi, jadi boleh dihapus kalau mau) -->
-                <button 
-                    class="lg:hidden p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                    disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5 text-gray-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-5 w-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
                     </svg>
-                </button>
+                </div>
+                <span class="text-lg font-bold tracking-tight text-gray-800 dark:text-white">Edu<span class="text-blue-600">Track</span></span>
             </div>
 
-            <!-- Tombol Logout -->
-            <form action="{{ route('logout') }}" method="POST" class="me-auto ms-4">
-                @csrf
-                <button type="submit"
-                    class="flex items-center justify-left bg-red-600 text-white px-4 py-2 rounded-md font-medium hover:bg-red-700 transition">
-                    Logout
+            <div class="flex items-center gap-3">
+                
+                <button 
+                    @click="darkMode = !darkMode" 
+                    class="group rounded-full bg-gray-100 p-2 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    title="Toggle Dark Mode"
+                >
+                    <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+                    <svg x-show="darkMode" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 </button>
-            </form>
 
-            <!-- Tombol dark mode -->
-            <button 
-                @click="darkMode = !darkMode" 
-                class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-full transition"
-            >
-                <span x-show="!darkMode">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill="currentColor" d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7"/></svg>
-                </span>
-                <span x-show="darkMode">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M12 18a6 6 0 1 0 0-12a6 6 0 0 0 0 12m10-6h1M12 2V1m0 22v-1m8-2l-1-1m1-15l-1 1M4 20l1-1M4 4l1 1m-4 7h1"/></svg>
-                </span>
-            </button>
-        </header>
+                <div class="hidden h-6 w-px bg-gray-200 dark:bg-gray-700 sm:block"></div>
 
-        <!-- Konten -->
-        <main class="flex-1 overflow-auto p-4 sm:p-6 text-gray-900 dark:text-gray-100">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-all hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                        </svg>
+                        <span class="hidden sm:inline">Keluar</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1">
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             @yield('content')
-        </main>
+        </div>
+    </main>
 
-    </div>
+    <footer class="mt-auto border-t border-gray-200 bg-white py-6 dark:border-gray-800 dark:bg-gray-900">
+        <div class="mx-auto max-w-7xl px-4 text-center text-xs text-gray-500 dark:text-gray-400 sm:px-6 lg:px-8">
+            &copy; {{ date('Y') }} EduTrack System. Dibuat dengan ❤️ untuk Pendidikan.
+        </div>
+    </footer>
 
 </body>
 </html>
