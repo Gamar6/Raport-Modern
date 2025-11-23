@@ -42,4 +42,15 @@ class Guru extends Model
         return $this->belongsToMany(Kelas::class, 'guru_kelas', 'guru_id', 'kelas_id');
     }
 
+    public function uts()
+    {
+        return $this->hasMany(Uts::class, 'guru_id');
+    }
+
+    // Guru punya banyak nilai UAS yang dia berikan (FK: guru_id ada di tabel uas)
+    public function uas()
+    {
+        return $this->hasMany(Uas::class, 'guru_id');
+    }
+
 }

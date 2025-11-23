@@ -326,8 +326,93 @@ class AdminController extends Controller
     // ========================================================================
     public function laporan()
     {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Akses khusus Admin.');
+        }
+    
+        // --- 1. RINGKASAN DATA DASAR ---
         $siswaCount = Siswa::count();
         $guruCount  = Guru::count();
-        return view('admin.laporan', compact('siswaCount', 'guruCount'));
+    
+        // --- 2. RATA-RATA NILAI KESELURUHAN SEKOLAH ---
+        $rata_rata_semua_siswa = Siswa::avg('rataNilai') ?? 0;
+    
+        // --- 3. BENCHMARK GURU (Top 5 berdasarkan Rata-rata Nilai Siswa) ---
+        $topGuruComparison = Guru::with(['uts', 'uas'])
+            ->get()
+            ->map(function ($guru) {
+                $totalUts = $guru->uts->avg('nilai') ?? 0;
+                $totalUas = $guru->uas->avg('nilai') ?? 0;
+                
+                $score = ($totalUts + $totalUas) / 2;
+                
+                return [
+                    'name' => $guru->namaGuru,
+                    'score' => round($score, 1)
+                ];
+            })
+            ->filter(fn($d) => $d['score'] > 0)
+            ->sortByDesc('score')
+            ->take(5)
+            ->values()
+            ->toArray();
+        
+        // --- 4. BENCHMARK PEMBINA (Top 5 berdasarkan Rata-rata Partisipasi) ---
+        $topPembinaComparison = Pembina::with('ekskul')
+            ->whereNotNull('ekskul_id')
+            ->get()
+            ->map(function ($pembina) {
+                $ekskul = $pembina->ekskul;
+                
+                if ($ekskul) {
+                    $avgRate = PenilaianEkskul::join('siswa_ekskul', 'penilaian_ekskul.siswa_ekskul_id', '=', 'siswa_ekskul.id')
+                        ->where('siswa_ekskul.ekskul_id', $ekskul->id)
+                        ->avg('penilaian_ekskul.tingkat_partisipasi');
+                
+                    return [
+                        'name' => $pembina->nama,
+                        'ekskul' => $ekskul->nama,
+                        'avg_rate' => round($avgRate ?? 0, 1)
+                    ];
+                }
+                return null;
+            })
+            ->filter()
+            ->sortByDesc('avg_rate')
+            ->take(5)
+            ->values()
+            ->toArray();
+        
+        // --- 5. TREN NILAI SEKOLAH (6 Bulan Terakhir) ---
+        $perkembangan_labels = [];
+        $perkembangan_values = [];
+        $now = Carbon::now();
+        
+        // Ambil data rata-rata dari 6 bulan terakhir
+        for ($i = 5; $i >= 0; $i--) {
+            $start = $now->copy()->startOfMonth()->subMonths($i);
+            $end = $start->copy()->endOfMonth();
+            $perkembangan_labels[] = $start->format('M Y'); // Contoh: 'Nov 2025'
+        
+            $avgUtsMonth = Uts::whereBetween('created_at', [$start, $end])->avg('nilai');
+            $avgUasMonth = Uas::whereBetween('created_at', [$start, $end])->avg('nilai');
+            
+            $avgMonth = ($avgUtsMonth && $avgUasMonth) ? ($avgUtsMonth + $avgUasMonth) / 2 : ($avgUtsMonth ?? $avgUasMonth ?? 0);
+            $perkembangan_values[] = round($avgMonth, 1);
+        }
+        
+        // --- 6. Progress Input Nilai (Ambil dari logika index() atau set 0) ---
+        $persentase_guru = 0; // Asumsi: Kita hanya perlu variabel ini jika tidak dihitung di sini
+        
+        return view('admin.laporan', compact(
+            'siswaCount', 
+            'guruCount',
+            'rata_rata_semua_siswa', 
+            'persentase_guru', 
+            'topGuruComparison',
+            'topPembinaComparison',
+            'perkembangan_labels',   // <-- VARIABEL DIDEFINISIKAN DI SINI
+            'perkembangan_values'    
+        ));
     }
 }
