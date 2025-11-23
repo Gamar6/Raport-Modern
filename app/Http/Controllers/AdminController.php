@@ -79,7 +79,7 @@ class AdminController extends Controller
         $perkembangan_values = [0, 0, 0, 0, 0, 0];
         $rata_rata_semua_siswa = 0;
 
-        return view('admin.admin', compact(
+        return view('Admin.admin', compact(
             'total_siswa', 'total_guru', 'total_pembina', 'total_ekskul',
             'persentase_guru', 'persentase_pembina',
             'nilai_mapel', 'rata_partisipasi_per_ekskul',
