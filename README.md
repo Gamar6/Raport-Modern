@@ -1,9 +1,9 @@
 ## 🚀 Fitur
 
-- Autentikasi Laravel (opsional jika ada)
+- Autentikasi Laravel 
 - Analisis dan visualisasi data siswa
 - Grafik interaktif dengan Chart.js
-- Dark mode toggle (Alpine.js)
+- Dark mode toggle
 - Desain responsif dengan Tailwind CSS
 
 ---
@@ -43,14 +43,17 @@ php artisan key:generate
 # 6. Konfigurasi database
 # Edit file .env dan atur DB_DATABASE, DB_USERNAME, DB_PASSWORD
 
-# 7. Jalankan migrasi (jika ada)
+# 7. Jalankan migrasi
 php artisan migrate
 
-# 8. Install frontend dependencies
+# 8. Jalankan seeder
+php artisan db:seed
+
+# 9. Install frontend dependencies
 npm install
 
-# 9. Compile asset (untuk development)
+# 10. Compile asset
 npm run dev
 
-# 10. Jalankan server Laravel
+# 11. Jalankan server Laravel
 php artisan serve
