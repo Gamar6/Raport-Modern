@@ -23,6 +23,7 @@ Sebelum menjalankan project ini, pastikan kamu sudah menginstall:
 ## 📖 Akses
 
 Jika anda ingin mengakses seeder default, berikut adalah akses untuk masing-masing role:
+
 🧑‍💼Admin:
 - email = admin@mail.com
 - password = password
