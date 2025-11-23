@@ -105,40 +105,55 @@ class AdminController extends Controller
 
     public function storeUser(Request $request)
     {
-        $request->validate([
-            'username' => 'required|unique:users,username',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'role'     => 'required|in:admin,guru,siswa,pembina',
-            'nama_lengkap' => 'required|string|max:255', 
-        ]);
+        // 1. Definisikan aturan validasi dasar
+        $rules = [
+            'username'     => 'required|unique:users,username',
+            'email'        => 'required|email|unique:users,email',
+            'password'     => 'required|min:6',
+            'role'         => 'required|in:admin,guru,siswa,pembina',
+            'nama_lengkap' => 'required|string|max:255',
+        ];
 
+        // 2. Tambahkan aturan validasi jika role adalah siswa
+        if ($request->role === 'siswa') {
+            $rules['nis']           = 'required|numeric|unique:siswa,nis'; // NIS wajib angka & unik
+            $rules['kelas_id']      = 'required|exists:kelas,id';          // Kelas wajib ada di DB
+            $rules['jenis_kelamin'] = 'required|in:L,P';                   // Hanya L atau P
+        }
+
+        // Jalankan validasi
+        $request->validate($rules);
+
+        // 3. Simpan data dengan Transaction
         DB::transaction(function () use ($request) {
-            // 1. Buat Akun
+            
+            // A. Buat Akun Login
             $user = User::create([
                 'username' => $request->username,
                 'email'    => $request->email,
-                'password' => $request->password, // Model akan handle bcrypt
+                'password' => $request->password, // Pastikan User Model punya setPasswordAttribute untuk bcrypt
                 'role'     => $request->role,
             ]);
 
-            // 2. Buat Profil
+            // B. Buat Profil Berdasarkan Role
             if ($request->role === 'guru') {
                 Guru::create([
                     'user_id'  => $user->id,
-                    'namaGuru' => $request->nama_lengkap, 
+                    'namaGuru' => $request->nama_lengkap,
                     'mapel'    => '-', 
                     'nip'      => '0'
                 ]);
-            } elseif ($request->role === 'siswa') {
+            } 
+            elseif ($request->role === 'siswa') {
                 Siswa::create([
-                    'user_id'   => $user->id,
-                    'namaSiswa' => $request->nama_lengkap,
-                    'nis'       => $request->nis ?? '0', 
-                    'kelas_id'  => $request->kelas_id, 
-                    'jenis_kelamin' => $request->jenis_kelamin ?? 'L'
+                    'user_id'       => $user->id,
+                    'namaSiswa'     => $request->nama_lengkap,
+                    'nis'           => $request->nis,           // Ambil dari request yang sudah divalidasi
+                    'kelas_id'      => $request->kelas_id,      // Ambil dari request
+                    'jenis_kelamin' => $request->jenis_kelamin  // Ambil dari request
                 ]);
-            } elseif ($request->role === 'pembina') {
+            } 
+            elseif ($request->role === 'pembina') {
                 Pembina::create([
                     'user_id' => $user->id,
                     'nama'    => $request->nama_lengkap,
