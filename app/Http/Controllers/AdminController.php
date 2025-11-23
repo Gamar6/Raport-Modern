@@ -174,7 +174,7 @@ class AdminController extends Controller
         elseif ($user->role === 'siswa' && $user->siswa) $currentName = $user->siswa->namaSiswa;
         elseif ($user->role === 'pembina' && $user->pembina) $currentName = $user->pembina->nama;
 
-        return view('admin.users-edit', compact('user', 'currentName', 'kelas'));
+        return view('Admin.users-edit', compact('user', 'currentName', 'kelas'));
     }
 
     public function updateUser(Request $request, $id)
@@ -213,7 +213,7 @@ class AdminController extends Controller
             }
         }
 
-        return redirect()->route('admin.users')->with('success', 'Data pengguna diperbarui.');
+        return redirect()->route('Admin.users')->with('success', 'Data pengguna diperbarui.');
     }
 
     public function deleteUser($id)
@@ -225,7 +225,7 @@ class AdminController extends Controller
         if ($user->pembina) $user->pembina->delete();
 
         $user->delete();
-        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus.');
+        return redirect()->route('Admin.users')->with('success', 'Pengguna berhasil dihapus.');
     }
 
     // ========================================================================
