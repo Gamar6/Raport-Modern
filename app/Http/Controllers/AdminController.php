@@ -213,7 +213,7 @@ class AdminController extends Controller
             }
         }
 
-        return redirect()->route('Admin.users')->with('success', 'Data pengguna diperbarui.');
+        return redirect()->route('admin.users')->with('success', 'Data pengguna diperbarui.');
     }
 
     public function deleteUser($id)
@@ -225,7 +225,7 @@ class AdminController extends Controller
         if ($user->pembina) $user->pembina->delete();
 
         $user->delete();
-        return redirect()->route('Admin.users')->with('success', 'Pengguna berhasil dihapus.');
+        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus.');
     }
 
     // ========================================================================
