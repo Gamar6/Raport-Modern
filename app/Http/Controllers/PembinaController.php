@@ -74,7 +74,7 @@ class PembinaController extends Controller
         // 8. [PENTING] Ambil Daftar Kelas untuk Dropdown "Tambah Anggota"
         $daftarKelas = Kelas::orderBy('namaKelas', 'asc')->get();
 
-        return view('pages.pembina', [
+        return view('Pages.pembina', [
             // Info Dasar
             'namaEkskul' => $ekskul->nama,
             'anggota' => $anggota,
