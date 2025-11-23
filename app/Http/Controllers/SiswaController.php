@@ -138,7 +138,7 @@ class SiswaController extends Controller
             });
 
 
-        return view('pages.siswa', compact(
+        return view('Pages.siswa', compact(
             'siswa',
             'rataRataUAS',
             'topPotensi',
