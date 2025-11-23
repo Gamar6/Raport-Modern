@@ -82,7 +82,7 @@ class GuruController extends Controller
 
     // dd($kelasLabels, $utsRataRata, $uasRataRata);
 
-        return view('pages.guru', compact(
+        return view('Pages.guru', compact(
             'mapel',
             'totalKelas',
             'totalSiswa',
