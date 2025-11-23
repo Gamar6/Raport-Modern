@@ -20,6 +20,23 @@ Sebelum menjalankan project ini, pastikan kamu sudah menginstall:
 
 ---
 
+## 📖 Akses
+
+Jika anda ingin mengakses seeder default, berikut adalah akses untuk masing-masing role:
+🧑‍💼Admin:
+- email = admin@mail.com
+- password = password
+
+🧑‍🏫Guru:
+- email = guru1@example.com
+- password = password
+
+👨‍🦳🧑‍🎓Siswa & Orang tua
+- email = siswa2a1@example.com
+- password = password
+
+---
+
 ## 🛠️ Cara Install
 
 Ikuti langkah-langkah berikut untuk menjalankan project ini secara lokal:
