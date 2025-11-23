@@ -15,6 +15,12 @@ class Kelas extends Model
         return $this->belongsTo(Guru::class, 'waliKelas_id');
     }
 
+    // Relasi ke Guru
+    public function guru()
+    {
+        return $this->belongsToMany(Guru::class, 'guru_kelas', 'kelas_id', 'guru_id');
+    }
+
     // Relasi ke siswa
     public function siswas()
     {

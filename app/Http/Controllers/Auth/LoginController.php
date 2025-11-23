@@ -10,42 +10,60 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login'); // sesuaikan dengan nama file form kamu
+        return view('auth.login');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => ['required', 'email'],
-            'password' => ['required'],
+        // 1. Ubah validasi agar TIDAK memaksa format email
+        // Ganti 'email' jadi 'login' agar fleksibel
+        $request->validate([
+            'login'    => 'required', // Bisa diisi Username atau Email
+            'password' => 'required',
         ]);
 
+        // 2. Cek apakah inputan user itu Email atau Username
+        $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        // 3. Gabungkan jadi kredensial
+        $credentials = [
+            $loginType => $request->login,
+            'password' => $request->password
+        ];
+
+        // 4. Proses Login
         if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
             $user = Auth::user();
 
-            // arahkan user berdasarkan role
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.admin');
-            } elseif ($user->role === 'guru') {
-                return redirect()->route('pages.guru');
-            } elseif ($user->role === 'pembina') {
-                return redirect()->route('pages.pembina');
-            } elseif ($user->role === 'siswa') {
-                return redirect()->route('pages.siswa');
-            } else {
-                Auth::logout();
-                return redirect()->route('login')->with('error', 'Role tidak dikenali.');
+            // 5. Redirect Berdasarkan Role
+            // Pastikan nama route ini SESUAI dengan web.php
+            switch ($user->role) {
+                case 'admin':
+                    return redirect()->route('admin.admin');
+                case 'guru':
+                    return redirect()->route('pages.guru');
+                case 'pembina':
+                    return redirect()->route('pages.pembina');
+                case 'siswa':
+                    return redirect()->route('pages.siswa');
+                default:
+                    Auth::logout();
+                    return redirect()->route('login')->with('error', 'Role akun tidak valid.');
             }
         }
 
+        // 6. Jika Gagal
         return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+            'login' => 'Username/Email atau password salah.',
+        ])->onlyInput('login');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 }

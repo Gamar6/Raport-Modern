@@ -23,7 +23,7 @@ class Guru extends Model
     // Relasi ke Kelas yang dia jadi wali
     public function kelas()
     {
-        return $this->hasMany(Kelas::class, 'waliKelas_id');
+        return $this->belongsToMany(Kelas::class, 'guru_kelas', 'guru_id', 'kelas_id');
     }
 
     public function guruKelas()
