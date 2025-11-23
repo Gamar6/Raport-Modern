@@ -264,7 +264,7 @@ class AdminController extends Controller
 
         $guru->kelas()->sync($request->kelas ?? []);
 
-        return redirect()->route('Admin.mapel')->with('success', 'Data pengampu berhasil diperbarui.');
+        return redirect()->route('admin.mapel')->with('success', 'Data pengampu berhasil diperbarui.');
     }
 
     // ========================================================================
