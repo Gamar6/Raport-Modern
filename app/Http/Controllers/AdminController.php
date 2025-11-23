@@ -94,13 +94,13 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::all();
-        return view('admin.users', compact('users'));
+        return view('Admin.users', compact('users'));
     }
 
     public function createUser()
     {
         $kelas = Kelas::all(); // Kirim data kelas ke view
-        return view('admin.create-user', compact('kelas'));
+        return view('Admin.create-user', compact('kelas'));
     }
 
     public function storeUser(Request $request)
@@ -161,7 +161,7 @@ class AdminController extends Controller
             }
         });
 
-        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil ditambahkan.');
+        return redirect()->route('Admin.users')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function editUser($id)
@@ -174,7 +174,7 @@ class AdminController extends Controller
         elseif ($user->role === 'siswa' && $user->siswa) $currentName = $user->siswa->namaSiswa;
         elseif ($user->role === 'pembina' && $user->pembina) $currentName = $user->pembina->nama;
 
-        return view('admin.users-edit', compact('user', 'currentName', 'kelas'));
+        return view('Admin.users-edit', compact('user', 'currentName', 'kelas'));
     }
 
     public function updateUser(Request $request, $id)
@@ -213,7 +213,7 @@ class AdminController extends Controller
             }
         }
 
-        return redirect()->route('admin.users')->with('success', 'Data pengguna diperbarui.');
+        return redirect()->route('Admin.users')->with('success', 'Data pengguna diperbarui.');
     }
 
     public function deleteUser($id)
@@ -225,7 +225,7 @@ class AdminController extends Controller
         if ($user->pembina) $user->pembina->delete();
 
         $user->delete();
-        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus.');
+        return redirect()->route('Admin.users')->with('success', 'Pengguna berhasil dihapus.');
     }
 
     // ========================================================================
@@ -234,14 +234,14 @@ class AdminController extends Controller
     public function mapel()
     {
         $gurus = Guru::all();
-        return view('admin.mapel', compact('gurus'));
+        return view('Admin.mapel', compact('gurus'));
     }
 
     public function editMapel($id)
     {
         $guru = Guru::with('kelas')->findOrFail($id);
         $semuaKelas = Kelas::orderBy('namaKelas', 'asc')->get();
-        return view('admin.mapel-edit', compact('guru', 'semuaKelas'));
+        return view('Admin.mapel-edit', compact('guru', 'semuaKelas'));
     }
 
     public function updateMapel(Request $request, $id)
@@ -264,7 +264,7 @@ class AdminController extends Controller
 
         $guru->kelas()->sync($request->kelas ?? []);
 
-        return redirect()->route('admin.mapel')->with('success', 'Data pengampu berhasil diperbarui.');
+        return redirect()->route('Admin.mapel')->with('success', 'Data pengampu berhasil diperbarui.');
     }
 
     // ========================================================================
@@ -273,14 +273,14 @@ class AdminController extends Controller
     public function ekskul()
     {
         $pembinas = Pembina::with('ekskul')->get();
-        return view('admin.ekskul', compact('pembinas'));
+        return view('Admin.ekskul', compact('pembinas'));
     }
 
     public function editEkskul($id)
     {
         $pembina = Pembina::findOrFail($id);
         $ekskuls = Ekskul::all();
-        return view('admin.ekskul-edit', compact('pembina', 'ekskuls'));
+        return view('Admin.ekskul-edit', compact('pembina', 'ekskuls'));
     }
 
     public function updateEkskul(Request $request, $id)
@@ -318,7 +318,7 @@ class AdminController extends Controller
             ]);
         });
 
-        return redirect()->route('admin.ekskul')->with('success', 'Data pembina & ekskul diperbarui.');
+        return redirect()->route('Admin.ekskul')->with('success', 'Data pembina & ekskul diperbarui.');
     }
 
     // ========================================================================
@@ -404,7 +404,7 @@ class AdminController extends Controller
         // --- 6. Progress Input Nilai (Ambil dari logika index() atau set 0) ---
         $persentase_guru = 0; // Asumsi: Kita hanya perlu variabel ini jika tidak dihitung di sini
         
-        return view('admin.laporan', compact(
+        return view('Admin.laporan', compact(
             'siswaCount', 
             'guruCount',
             'rata_rata_semua_siswa', 
