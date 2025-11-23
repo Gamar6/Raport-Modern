@@ -41,7 +41,7 @@ class Siswa extends Model
     // 🔹 Relasi ke Catatan Pembina (bisa banyak)
     public function catatanPembina()
     {
-        return $this->hasMany(CatatanPembina::class);
+        return $this->hasMany(CatatanPembina::class, 'siswa_id');
     }
 
     public function siswaEkskul()

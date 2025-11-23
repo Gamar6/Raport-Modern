@@ -148,7 +148,8 @@ class SiswaController extends Controller
             'ekskuls',
             'catatanPembina',
             'catatanUAS',
-            'catatanUTS'
+            'catatanUTS',
+            'catatanPembina'
         ));
     }
 }

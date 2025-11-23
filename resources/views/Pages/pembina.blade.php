@@ -64,8 +64,96 @@
       </div>
     </div>
 
+    <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 animate-fade-in-up delay-200"
+         x-data="{ 
+            selectedKelas: '',
+            students: [],
+            isLoading: false,
+            
+            async fetchStudents() {
+                if (!this.selectedKelas) {
+                    this.students = [];
+                    return;
+                }
+                this.isLoading = true;
+                try {
+                    // Panggil API (Pastikan route ini ada di web.php)
+                    const response = await fetch(`/api/siswa-by-kelas/${this.selectedKelas}`);
+                    this.students = await response.json();
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+                this.isLoading = false;
+            }
+         }">
+        
+        <div class="border-b border-gray-100 bg-blue-50/50 px-6 py-5 dark:border-gray-700 dark:bg-blue-900/10">
+            <h3 class="flex items-center text-lg font-bold text-gray-900 dark:text-white">
+                <span class="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-md shadow-blue-600/20">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
+                    </svg>
+                </span>
+                Tambah Anggota Ekskul
+            </h3>
+        </div>
+
+        <div class="p-6">
+            <form action="{{ route('pembina.anggota.store') }}" method="POST" class="grid grid-cols-1 gap-6 md:grid-cols-7 items-end">
+                @csrf
+
+                <div class="md:col-span-2">
+                    <label class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">Pilih Kelas</label>
+                    <div class="relative">
+                        <select x-model="selectedKelas" @change="fetchStudents()" required
+                            class="w-full appearance-none rounded-xl border-gray-200 bg-gray-50 p-3 pl-4 pr-10 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all">
+                            <option value="">-- Pilih Kelas --</option>
+                            @foreach ($daftarKelas as $k)
+                                <option value="{{ $k->id }}">{{ $k->namaKelas }}</option>
+                            @endforeach
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3">
+                    <label class="mb-1.5 block text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">Pilih Siswa</label>
+                    <div class="relative">
+                        <select name="siswa_id" required
+                            class="w-full appearance-none rounded-xl border-gray-200 bg-gray-50 p-3 pl-4 pr-10 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            :disabled="!selectedKelas || isLoading">
+                            
+                            <option value="">-- Pilih Siswa --</option>
+                            <template x-for="siswa in students" :key="siswa.id">
+                                <option :value="siswa.id" x-text="siswa.namaSiswa"></option>
+                            </template>
+                        </select>
+                        
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                            <svg x-show="!isLoading" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            <svg x-show="isLoading" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        </div>
+                    </div>
+                    <p x-show="students.length === 0 && selectedKelas && !isLoading" class="mt-1 text-[10px] text-red-500 font-medium" style="display: none;">
+                        Tidak ada siswa di kelas ini.
+                    </p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <button type="submit" 
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-blue-600/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                        :disabled="!selectedKelas || students.length === 0">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z" clip-rule="evenodd" /></svg>
+                        Tambahkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="grid gap-8 lg:grid-cols-2 animate-fade-in-up delay-200">
-      
       <div class="relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div class="border-b border-gray-100 bg-blue-50/50 px-6 py-5 dark:border-gray-700 dark:bg-blue-900/10">
             <h3 class="flex items-center text-lg font-bold text-gray-900 dark:text-white">

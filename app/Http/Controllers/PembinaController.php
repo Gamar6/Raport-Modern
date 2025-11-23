@@ -5,124 +5,148 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pembina;
+use App\Models\Kelas; // Pastikan model Kelas di-import
+use App\Models\Siswa;
 use App\Models\SiswaEkskul;
 use App\Models\PenilaianEkskul;
 use App\Models\CatatanPembina;
 
 class PembinaController extends Controller
 {
-public function index()
-{
-    if (!Auth::check() || Auth::user()->role !== 'pembina') {
-        return redirect()->route('login')->with('error', 'Akses khusus Pembina Ekstrakurikuler.');
-    }
-
-    $pembina = Auth::user()->pembina;
-    $ekskul = $pembina->ekskul;
-
-    // Ambil anggota ekskul
-    $anggota = SiswaEkskul::with(['siswa', 'penilaianEkskul'])
-        ->where('ekskul_id', $ekskul->id)
-        ->get();
-
-    $totalAnggota = $anggota->count();
-
-    // Rata-rata partisipasi
-    $rataPartisipasi = PenilaianEkskul::whereIn(
-        'siswa_ekskul_id',
-        $anggota->pluck('id')
-    )->avg('tingkat_partisipasi');
-
-    // Chart partisipasi
-    $chartLabels = $anggota->map(fn($a) => $a->siswa->namaSiswa);
-    $chartPartisipasi = $anggota->map(fn($a) => optional($a->penilaianEkskul)->tingkat_partisipasi ?? 0);
-
-    // Top 5 partisipasi
-    $top5 = $anggota->sortByDesc(fn($a) => optional($a->penilaianEkskul)->tingkat_partisipasi ?? 0)->take(5);
-
-    // Siswa butuh perhatian (<60%)
-    $butuhPerhatian = $anggota->filter(fn($a) => (optional($a->penilaianEkskul)->tingkat_partisipasi ?? 0) < 60);
-
-    // Distribusi keterampilan
-    $keterampilanCount = $anggota->groupBy(fn($a) => optional($a->penilaianEkskul)->tingkat_keterampilan ?? 'Belum Dinilai')
-                                ->map->count();
-
-    // **Tambahkan listSiswa seperti di chartKeterampilan**
-    $tingkatOptions = ['Mahir', 'Lanjut', 'Menengah', 'Pemula'];
-    $dataChart =[];
-    $listSiswa = [];
-
-    foreach ($tingkatOptions as $tingkat) {
-        $listSiswa[$tingkat] = $anggota->filter(fn($a) => optional($a->penilaianEkskul)->tingkat_keterampilan === $tingkat)
-                                        ->map(fn($a) => $a->siswa->namaSiswa)
-                                        ->toArray();
-    }
-
-    // Tambahkan kategori "Belum Dinilai"
-    $listSiswa['Belum Dinilai'] = $anggota->filter(fn($a) => optional($a->penilaianEkskul)->tingkat_keterampilan === null)
-                                           ->map(fn($a) => $a->siswa->namaSiswa)
-                                           ->toArray();
-
-    return view('pages.pembina', [
-        'namaEkskul' => $ekskul->nama,
-        'anggota' => $anggota,
-        'totalAnggota' => $totalAnggota,
-        'rataPartisipasi' => round($rataPartisipasi ?? 0, 2),
-        'ekskul' => $ekskul,
-        'namaPembina' => $pembina->nama,
-
-        // Chart
-        'chartLabels' => $chartLabels,
-        'chartPartisipasi' => $chartPartisipasi,
-        'top5' => $top5,
-        'butuhPerhatian' => $butuhPerhatian,
-        'keterampilanCount' => $keterampilanCount,
-        'dataChart' => $dataChart,
-        'listSiswa' => $listSiswa // **variable tambahan**
-    ]);
-}
-
-
-    public function chartKeterampilan()
+    // ========================================================================
+    // 1. DASHBOARD PEMBINA
+    // ========================================================================
+    public function index()
     {
-        $ekskulId = Auth::user()->pembina->ekskul->id;
+        // 1. Cek Hak Akses
+        if (!Auth::check() || Auth::user()->role !== 'pembina') {
+            return redirect()->route('login')->with('error', 'Akses khusus Pembina Ekstrakurikuler.');
+        }
 
-        // Ambil semua anggota ekskul
-        $anggotaEkskul = SiswaEkskul::with('siswa')
-            ->where('ekskul_id', $ekskulId)
+        $pembina = Auth::user()->pembina;
+        
+        // 2. Cek apakah user ini sudah jadi pembina ekskul
+        if (!$pembina || !$pembina->ekskul) {
+            return redirect()->back()->with('error', 'Anda belum ditugaskan ke ekskul manapun. Hubungi Admin.');
+        }
+
+        $ekskul = $pembina->ekskul;
+
+        // 3. Ambil Anggota Ekskul
+        $anggota = SiswaEkskul::with(['siswa', 'penilaianEkskul'])
+            ->where('ekskul_id', $ekskul->id)
             ->get();
 
-        // Ambil penilaian mereka
-        $penilaian = PenilaianEkskul::whereIn('siswa_ekskul_id', $anggotaEkskul->pluck('id'))->get();
+        $totalAnggota = $anggota->count();
+
+        // 4. Hitung Rata-rata Partisipasi
+        $rataPartisipasi = PenilaianEkskul::whereIn(
+            'siswa_ekskul_id',
+            $anggota->pluck('id')
+        )->avg('tingkat_partisipasi');
+
+        // 5. Data untuk Chart
+        $chartLabels = $anggota->map(fn($a) => $a->siswa->namaSiswa);
+        $chartPartisipasi = $anggota->map(fn($a) => optional($a->penilaianEkskul)->tingkat_partisipasi ?? 0);
+
+        // 6. Statistik Tambahan (Top 5 & Butuh Perhatian)
+        $top5 = $anggota->sortByDesc(fn($a) => optional($a->penilaianEkskul)->tingkat_partisipasi ?? 0)->take(5);
+        $butuhPerhatian = $anggota->filter(fn($a) => (optional($a->penilaianEkskul)->tingkat_partisipasi ?? 0) < 60);
+
+        // 7. Distribusi Keterampilan (Chart Keterampilan)
+        $keterampilanCount = $anggota->groupBy(fn($a) => optional($a->penilaianEkskul)->tingkat_keterampilan ?? 'Belum Dinilai')
+                                     ->map->count();
 
         $tingkatOptions = ['Mahir', 'Lanjut', 'Menengah', 'Pemula'];
-
         $dataChart = [];
         $listSiswa = [];
 
         foreach ($tingkatOptions as $tingkat) {
-            $siswaTingkat = $penilaian->filter(fn($p) => $p->tingkat_keterampilan === $tingkat)
-                ->map(fn($p) => $p->anggota->siswa->namaSiswa)
-                ->toArray();
-
-            $dataChart[$tingkat] = count($siswaTingkat);
-            $listSiswa[$tingkat] = $siswaTingkat;
+            $listSiswa[$tingkat] = $anggota->filter(fn($a) => optional($a->penilaianEkskul)->tingkat_keterampilan === $tingkat)
+                                           ->map(fn($a) => $a->siswa->namaSiswa)
+                                           ->toArray();
         }
+        
+        $listSiswa['Belum Dinilai'] = $anggota->filter(fn($a) => optional($a->penilaianEkskul)->tingkat_keterampilan === null)
+                                              ->map(fn($a) => $a->siswa->namaSiswa)
+                                              ->toArray();
+        
+        // 8. [PENTING] Ambil Daftar Kelas untuk Dropdown "Tambah Anggota"
+        $daftarKelas = Kelas::orderBy('namaKelas', 'asc')->get();
 
-        // Tambahkan kategori "Belum Dinilai"
-        $sudahDinilaiIds = $penilaian->pluck('siswa_ekskul_id')->toArray();
-        $belumDinilai = $anggotaEkskul->filter(fn($a) => !in_array($a->id, $sudahDinilaiIds))
-            ->map(fn($a) => $a->siswa->namaSiswa)
-            ->toArray();
-
-        $dataChart['Belum Dinilai'] = count($belumDinilai);
-        $listSiswa['Belum Dinilai'] = $belumDinilai;
-
-        return view('pages.pembina_keterampilan', [
+        return view('pages.pembina', [
+            // Info Dasar
+            'namaEkskul' => $ekskul->nama,
+            'anggota' => $anggota,
+            'totalAnggota' => $totalAnggota,
+            'rataPartisipasi' => round($rataPartisipasi ?? 0, 2),
+            'ekskul' => $ekskul,
+            'namaPembina' => $pembina->nama,
+            
+            // Statistik
+            'chartLabels' => $chartLabels,
+            'chartPartisipasi' => $chartPartisipasi,
+            'top5' => $top5,
+            'butuhPerhatian' => $butuhPerhatian,
+            'keterampilanCount' => $keterampilanCount,
             'dataChart' => $dataChart,
-            'listSiswa' => $listSiswa
+            'listSiswa' => $listSiswa,
+
+            // Data untuk Fitur Tambah Anggota
+            'daftarKelas' => $daftarKelas 
         ]);
     }
+
+    // ========================================================================
+    // 2. API & STORE (FITUR TAMBAH ANGGOTA)
+    // ========================================================================
+
+    // API: Ambil Siswa berdasarkan Kelas (Dipanggil via AJAX/Alpine.js)
+    public function getSiswaByKelas($kelas_id)
+    {
+        $siswas = Siswa::where('kelas_id', $kelas_id)
+                       ->orderBy('namaSiswa', 'asc')
+                       ->get(['id', 'namaSiswa']);
+                       
+        return response()->json($siswas);
+    }
+
+    // STORE: Simpan Anggota Baru ke Ekskul
+    public function storeAnggota(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswa,id',
+        ]);
+
+        $pembina = Auth::user()->pembina;
+        
+        if (!$pembina || !$pembina->ekskul) {
+             return back()->with('error', 'Anda tidak memiliki akses ke ekskul.');
+        }
+        
+        $ekskulId = $pembina->ekskul->id;
+
+        // Cek Duplikasi (Apakah siswa sudah ada di ekskul ini?)
+        $exists = SiswaEkskul::where('siswa_id', $request->siswa_id)
+                             ->where('ekskul_id', $ekskulId)
+                             ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'Siswa tersebut sudah terdaftar di ekskul ini.');
+        }
+
+        // Simpan Data
+        SiswaEkskul::create([
+            'siswa_id'  => $request->siswa_id,
+            'ekskul_id' => $ekskulId
+        ]);
+
+        return back()->with('success', 'Anggota baru berhasil ditambahkan!');
+    }
+
+    // ========================================================================
+    // 3. PENILAIAN & CATATAN
+    // ========================================================================
 
     public function storePenilaian(Request $request)
     {
@@ -134,55 +158,55 @@ public function index()
             'catatan' => 'nullable|string',
         ]);
 
-        // Ambil SiswaEkskul sesuai siswa dan ekskul
+        // Cari ID di tabel pivot
         $siswaEkskul = SiswaEkskul::where('siswa_id', $request->siswa_id)
                                 ->where('ekskul_id', $request->ekskul_id)
                                 ->firstOrFail();
 
-        // Simpan penilaian
-        PenilaianEkskul::create([
-            'siswa_ekskul_id' => $siswaEkskul->id,
-            'tingkat_partisipasi' => $request->tingkat_partisipasi,
-            'tingkat_keterampilan' => $request->tingkat_keterampilan,
-            'catatan' => $request->catatan,
-        ]);
+        // Simpan Penilaian
+        PenilaianEkskul::updateOrCreate(
+            ['siswa_ekskul_id' => $siswaEkskul->id],
+            [
+                'tingkat_partisipasi' => $request->tingkat_partisipasi,
+                'tingkat_keterampilan' => $request->tingkat_keterampilan,
+                'catatan' => $request->catatan,
+            ]
+        );
 
         return back()->with('success', 'Penilaian berhasil disimpan.');
     }
 
+    public function storeCatatan(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswa,id',
+            'ekskul_id' => 'required|exists:ekskul,id',
+            'potensi' => 'nullable|string|max:255',
+            'catatan' => 'nullable|string',
+            'alasan' => 'nullable|string',
+            'rekomendasi' => 'nullable|string'
+        ]);
 
-public function storeCatatan(Request $request)
-{
-    $request->validate([
-        'siswa_id' => 'required|exists:siswa,id',
-        'ekskul_id' => 'required|exists:ekskul,id',
-        'potensi' => 'nullable|string|max:255',
-        'catatan' => 'nullable|string',
-        'rekomendasi' => 'nullable|string'
-    ]);
+        $pembina = Auth::user()->pembina;
+        
+        // Validasi Keanggotaan
+        $siswaEkskul = SiswaEkskul::where('siswa_id', $request->siswa_id)
+            ->where('ekskul_id', $request->ekskul_id)
+            ->firstOrFail();
 
-    $pembina = Auth::user()->pembina;
+        $siswa = $siswaEkskul->siswa;
 
-    // Pastikan siswa itu memang anggota ekskul pembina
-    $siswaEkskul = SiswaEkskul::where('siswa_id', $request->siswa_id)
-        ->where('ekskul_id', $request->ekskul_id)
-        ->firstOrFail();
+        // Simpan Catatan
+        CatatanPembina::create([
+            'siswa_id' => $siswa->id,
+            'pembina_id' => $pembina->id,
+            'namaAnggota' => $siswa->namaSiswa,
+            'catatan' => $request->catatan,
+            'potensi' => $request->potensi,
+            'alasan' => $request->alasan,
+            'rekomendasi_pengembangan' => $request->rekomendasi,
+        ]);
 
-    $siswa = $siswaEkskul->siswa;
-
-    CatatanPembina::create([
-        'siswa_id' => $siswa->id,
-        'pembina_id' => $pembina->id,
-        'namaAnggota' => $siswa->namaSiswa,
-        'catatan' => $request->catatan,
-        'potensi' => $request->potensi,
-        'rekomendasi_pengembangan' => $request->rekomendasi,
- 
-    ]);
-
-    return back()->with('SUKSES', 'Catatan pembina berhasil disimpan.');
-}
-
-
-
+        return back()->with('SUKSES', 'Catatan potensi berhasil disimpan.');
+    }
 }
