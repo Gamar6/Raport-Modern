@@ -20,7 +20,7 @@ Sebelum menjalankan project ini, pastikan kamu sudah menginstall:
 
 ---
 
-## 🚪 Akses
+## 🔐 Akses
 
 Jika anda ingin mengakses seeder default, berikut adalah akses untuk masing-masing role:
 
