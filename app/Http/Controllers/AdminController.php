@@ -174,7 +174,7 @@ class AdminController extends Controller
         elseif ($user->role === 'siswa' && $user->siswa) $currentName = $user->siswa->namaSiswa;
         elseif ($user->role === 'pembina' && $user->pembina) $currentName = $user->pembina->nama;
 
-        return view('Admin.users-edit', compact('user', 'currentName', 'kelas'));
+        return view('admin.users-edit', compact('user', 'currentName', 'kelas'));
     }
 
     public function updateUser(Request $request, $id)
