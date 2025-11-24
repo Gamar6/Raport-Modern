@@ -32,6 +32,10 @@ Jika anda ingin mengakses seeder default, berikut adalah akses untuk masing-masi
 - email = guru1@example.com
 - password = password
 
+🙎‍♂️Pembina Ekstrakurikuler:
+- email = pembina1@example.com
+- password = password
+
 👨‍🦳🧑‍🎓Siswa & Orang tua
 - email = siswa2a1@example.com
 - password = password
